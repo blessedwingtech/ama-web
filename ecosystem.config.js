@@ -1,14 +1,14 @@
 module.exports = {
   apps: [
     {
-      name: 'ama-website',
+      name: 'ama-bittonik',
       script: 'node_modules/next/dist/bin/next',
-      args: 'start -p 3000',
-      instances: 'max', // Utilise tous les cœurs CPU du VPS
+      args: 'start -p 3050',
+      instances: 'max',
       exec_mode: 'cluster',
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3000,
+        PORT: 3050,
       },
       max_memory_restart: '800M',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
@@ -16,7 +16,6 @@ module.exports = {
       out_file: './logs/pm2-out.log',
       merge_logs: true,
       autorestart: true,
-      restart_delay: 4000,
     },
   ],
 };
