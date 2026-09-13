@@ -1,0 +1,65 @@
+{
+  "lang": "ht",
+  "name": "Kreyòl Ayisyen",
+  "nav": {
+    "home": "Akèy",
+    "about": "Konsènan Nou",
+    "team": "Ekip Nou",
+    "ministries": "Ministè Nou Yo",
+    "media": "Mediatèk",
+    "donate": "Fè Yon Don",
+    "contact": "Kontak & Manm"
+  },
+  "hero": {
+    "badge": "Vizyon 2050 pou Plato Santral la",
+    "title": "Plis pase 100 000 Nanm Touche, Restawore ak Fòme pou Kris",
+    "subtitle": "Yon òganizasyon kretyen pwotestan k ap travay toutotou lak Pelig, nan Tomonn ak tout Plato Santral la pou yon gwo reveye espirityèl ak sipò sosyal.",
+    "ctaDiscover": "Dekouvri Misyon an",
+    "ctaDonate": "Soutni Travay la",
+    "statsLabel": "Objektif 2050",
+    "locationBadge": "Tomonn — Lak Pelig, Ayiti"
+  },
+  "president": {
+    "sectionTitle": "Pawòl Prezidan an",
+    "quote": "Kè nou chaje ak lafwa paske chak grenn nanm nan mòn Plato Santral yo ak bò lak Pelig la gen anpil valè nan je Bondye. Rive nan lane 2050, avèk gras Senyè a epi tèt ansanm tout legliz yo, nou vle bati yon jenerasyon disip solid e fidèl.",
+    "author": "Julberson TOUTOUTE",
+    "role": "Prezidan Komite Ekzekitif — Asosyasyon 100 000 Nanm (AMA)"
+  },
+  "pillars": {
+    "title": "4 Pilye Aksyon Nou Yo",
+    "subtitle": "Yon travay konplè ki makonnen predikasyon levanjil, fòmasyon lafwa ak solidarite kretyen.",
+    "readMore": "Aprann plis sou ministè nou yo"
+  },
+  "donations": {
+    "title": "Soutni Nou / Fè Yon Don",
+    "subtitle": "Jenerozite w ede nou finanse kanpay evanjelizasyon yo, tounwa jèn yo ak èd pou fanmi ki nan bezwen yo.",
+    "moncashTitle": "Voye don w pa MonCash (Digicel)",
+    "natcashTitle": "Voye don w pa Natcash (Natcom)",
+    "diasporaTitle": "Dyaspora & Entènasyonal (PayPal / Kat)",
+    "copyNumber": "Kopi nimewo a",
+    "copied": "Kopye !",
+    "sponsorBible": "Pateneye yon Bib",
+    "sponsorTrophy": "Pateneye yon Trofe pou jèn yo"
+  },
+  "contact": {
+    "title": "Kontakte Nou & Vin Manm",
+    "subtitle": "Ou gen yon kesyon, yon demann lapriyè oswa ou vle vin yon manm aktif ? Ekip nou an la pou koute w.",
+    "formTitle": "Voye yon Mesaj",
+    "prayerTitle": "Demann Lapriyè Konfidansyèl",
+    "membershipTitle": "Fòmilè Adhesyon Kòm Manm",
+    "name": "Non konplè",
+    "email": "Adrès Imèl",
+    "phone": "Nimewo Telefòn",
+    "subject": "Sijè",
+    "message": "Mesaj ou a",
+    "send": "Voye mesaj la",
+    "submitting": "Ap voye...",
+    "successMessage": "Mesaj ou a rive byen nan biwo AMA. Se pou Bondye beni w an abondans !"
+  },
+  "footer": {
+    "aboutText": "Òganizasyon kretyen pwotestan, san bi likratif e san pati politik, ki chita nan Tomonn (Sant, Ayiti). Te fonde 7 out 2025 pou glwa Jezikri.",
+    "quickLinks": "Lyen Rapid",
+    "headquarters": "Biwo Santral",
+    "rights": "Tout dwa rezève. Asosyasyon 100 000 Nanm (AMA)."
+  }
+}

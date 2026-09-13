@@ -1,0 +1,65 @@
+{
+  "lang": "fr",
+  "name": "Français",
+  "nav": {
+    "home": "Accueil",
+    "about": "À Propos",
+    "team": "Notre Équipe",
+    "ministries": "Nos Ministères",
+    "media": "Médiathèque",
+    "donate": "Faire un Don",
+    "contact": "Contact & Adhésion"
+  },
+  "hero": {
+    "badge": "Vision 2050 pour le Plateau Central",
+    "title": "Plus de 100 000 Âmes Gagnées, Restaurées et Formées pour Christ",
+    "subtitle": "Organisation chrétienne protestante engagée autour du Lac de Péligre, à Thomonde et dans tout le Plateau Central haïtien pour un réveil spirituel et un impact social concret.",
+    "ctaDiscover": "Découvrir la Mission",
+    "ctaDonate": "Soutenir l'Œuvre",
+    "statsLabel": "Objectif 2050",
+    "locationBadge": "Thomonde — Lac de Péligre, Haïti"
+  },
+  "president": {
+    "sectionTitle": "Mot du Président",
+    "quote": "Notre ferveur est ancrée dans la certitude que chaque âme dans les collines du Plateau Central et autour du lac de Péligre a une valeur inestimable aux yeux de Dieu. D'ici 2050, avec la grâce du Seigneur et l'unité fraternelle des assemblées, nous voulons bâtir une génération de disciples fervents et engagés.",
+    "author": "Julberson TOUTOUTE",
+    "role": "Président du Comité Exécutif — Association 100,000 Âmes (AMA)"
+  },
+  "pillars": {
+    "title": "Nos 4 Piliers d'Intervention",
+    "subtitle": "Une action holistique alliant proclamation de la foi, édification fraternelle et solidarité chrétienne.",
+    "readMore": "En savoir plus sur nos ministères"
+  },
+  "donations": {
+    "title": "Nous Soutenir / Faire un Don",
+    "subtitle": "Votre générosité permet de financer les campagnes d'évangélisation, les tournois de la jeunesse et l'aide aux familles vulnérables.",
+    "moncashTitle": "Faire un don via MonCash (Digicel)",
+    "natcashTitle": "Faire un don via Natcash (Natcom)",
+    "diasporaTitle": "Diaspora & International (PayPal / CB)",
+    "copyNumber": "Copier le numéro",
+    "copied": "Copié !",
+    "sponsorBible": "Parrainer une Bible",
+    "sponsorTrophy": "Parrainer un Trophée pour la jeunesse"
+  },
+  "contact": {
+    "title": "Contactez-nous & Rejoignez-nous",
+    "subtitle": "Une question, une demande de prière ou un souhait d'adhésion ? Notre équipe est à votre écoute fraternelle.",
+    "formTitle": "Envoyer un Message",
+    "prayerTitle": "Demande de Prière Confidentielle",
+    "membershipTitle": "Formulaire d'Adhésion Fraternelle",
+    "name": "Nom complet",
+    "email": "Adresse Email",
+    "phone": "Numéro de Téléphone",
+    "subject": "Sujet",
+    "message": "Votre message",
+    "send": "Envoyer le message",
+    "submitting": "Envoi en cours...",
+    "successMessage": "Votre message a été envoyé avec succès au secrétariat d'AMA. Que Dieu vous bénisse !"
+  },
+  "footer": {
+    "aboutText": "Organisation chrétienne protestante, sans but lucratif et apolitique, basée à Thomonde (Centre, Haïti). Fondée le 7 août 2025 pour la gloire de Jésus-Christ.",
+    "quickLinks": "Liens Rapides",
+    "headquarters": "Siège Institutionnel",
+    "rights": "Tous droits réservés. Association 100,000 Âmes (AMA)."
+  }
+}

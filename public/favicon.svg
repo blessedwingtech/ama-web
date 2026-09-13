@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+  </defs>
+  <!-- Background Rounded Shield -->
+  <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#blueGrad)" stroke="url(#goldGrad)" stroke-width="4" />
+  
+  <!-- Stylized Cross & Letters AMA -->
+  <text x="50" y="58" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="url(#goldGrad)" text-anchor="middle">AMA</text>
+  <circle cx="50" cy="22" r="4" fill="#FBBF24" />
+</svg>

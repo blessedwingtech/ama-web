@@ -1,0 +1,65 @@
+{
+  "lang": "en",
+  "name": "English",
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "team": "Our Team",
+    "ministries": "Ministries",
+    "media": "Media Gallery",
+    "donate": "Donate",
+    "contact": "Contact & Join"
+  },
+  "hero": {
+    "badge": "Vision 2050 for the Central Plateau",
+    "title": "Over 100,000 Souls Reached, Restored and Discipled for Christ",
+    "subtitle": "A Protestant Christian non-profit coalition based around Lake Péligre, Thomonde, and across the Haitian Central Plateau for spiritual revival and tangible social impact.",
+    "ctaDiscover": "Discover the Mission",
+    "ctaDonate": "Support the Ministry",
+    "statsLabel": "2050 Goal",
+    "locationBadge": "Thomonde — Lake Péligre, Haiti"
+  },
+  "president": {
+    "sectionTitle": "President's Message",
+    "quote": "Our passion is rooted in the conviction that every single soul across the Central Plateau hills and around Lake Péligre has invaluable worth before God. By 2050, by God's grace and through genuine church unity, we strive to build a generation of devoted disciples.",
+    "author": "Julberson TOUTOUTE",
+    "role": "President of the Executive Committee — Association 100,000 Souls (AMA)"
+  },
+  "pillars": {
+    "title": "Our 4 Core Pillars of Action",
+    "subtitle": "A holistic Christian outreach combining Gospel proclamation, youth discipleship, and practical community aid.",
+    "readMore": "Learn more about our ministries"
+  },
+  "donations": {
+    "title": "Support Our Work / Make a Donation",
+    "subtitle": "Your generous contribution helps fund evangelistic crusades, youth sports leagues, and relief for vulnerable families.",
+    "moncashTitle": "Give via MonCash (Digicel)",
+    "natcashTitle": "Give via Natcash (Natcom)",
+    "diasporaTitle": "Diaspora & Worldwide (PayPal / Cards)",
+    "copyNumber": "Copy number",
+    "copied": "Copied!",
+    "sponsorBible": "Sponsor a Bible",
+    "sponsorTrophy": "Sponsor a Youth Trophy"
+  },
+  "contact": {
+    "title": "Contact Us & Get Involved",
+    "subtitle": "Have a question, a prayer request, or looking to join our fellowship? Our team is here to connect with you.",
+    "formTitle": "Send Us a Message",
+    "prayerTitle": "Confidential Prayer Request",
+    "membershipTitle": "Christian Membership Form",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "subject": "Subject",
+    "message": "Your Message",
+    "send": "Send Message",
+    "submitting": "Sending...",
+    "successMessage": "Your message was sent successfully to AMA administration. May God bless you abundantly!"
+  },
+  "footer": {
+    "aboutText": "Protestant Christian non-profit organization based in Thomonde (Centre, Haiti). Founded on August 7, 2025 for the glory of Jesus Christ.",
+    "quickLinks": "Quick Links",
+    "headquarters": "Headquarters",
+    "rights": "All rights reserved. Association 100,000 Souls (AMA)."
+  }
+}
