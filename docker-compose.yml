@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. Base de Données PostgreSQL
+  # 1. Base de Données PostgreSQL Dédiée & Isolée
   db:
     image: postgres:16-alpine
     container_name: ama_postgres
@@ -9,11 +9,9 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-ama_db}
       POSTGRES_USER: ${POSTGRES_USER:-ama_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-AmaSecurePass2025!}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-AmaSecurePass2025}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "127.0.0.1:5432:5432" # Accessible uniquement en local sur le VPS
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ama_user} -d ${POSTGRES_DB:-ama_db}"]
       interval: 10s
@@ -34,11 +32,13 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-ama_user}:${POSTGRES_PASSWORD:-AmaSecurePass2025!}@db:5432/${POSTGRES_DB:-ama_db}?schema=public
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://association100000ames.org}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ama_user}:${POSTGRES_PASSWORD:-AmaSecurePass2025}@db:5432/${POSTGRES_DB:-ama_db}?schema=public
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://ama.bittonik.com}
       ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY:-AMA2025*Admin}
+      PORT: 3000
     ports:
-      - "127.0.0.1:3000:3000" # Expose sur localhost pour Nginx reverse-proxy
+      # Expose le port 3050 sur le VPS (redirigé par Nginx vers le port 3000 du conteneur)
+      - "127.0.0.1:3050:3000"
     networks:
       - ama_network
 
