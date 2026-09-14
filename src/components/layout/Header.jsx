@@ -87,14 +87,14 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`px-2.5 xl:px-3.5 py-1.5 rounded-lg text-xs xl:text-sm font-medium whitespace-nowrap transition-all ${
                     active
                       ? 'text-ama-blue-900 bg-blue-50 font-semibold shadow-xs'
                       : 'text-slate-700 hover:text-ama-blue-900 hover:bg-slate-100/70'
@@ -107,7 +107,7 @@ export default function Header() {
           </nav>
 
           {/* Right Action Area */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             {/* Language Switcher */}
             <div className="relative">
               <button
