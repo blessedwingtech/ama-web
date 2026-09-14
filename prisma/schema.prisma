@@ -127,4 +127,34 @@ model SiteStatistic {
   @@map("site_statistics")
 }
 
+model GalleryPhoto {
+  id          String   @id @default(uuid())
+  title       String
+  category    String   @default("evangelisation") // evangelisation, sport, jeunesse, social
+  date        String
+  location    String
+  image       String
+  caption     String
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  @@map("gallery_photos")
+}
+
+model AudioRecording {
+  id          String   @id @default(uuid())
+  title       String
+  speaker     String
+  event       String
+  duration    String
+  category    String   @default("theologie") // theologie, evangelisation, vision
+  date        String
+  audioSrc    String
+  description String
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("audio_recordings")
+}

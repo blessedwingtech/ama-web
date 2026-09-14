@@ -28,6 +28,10 @@ import {
   BarChart3,
   TrendingUp,
   Save,
+  Camera,
+  Headphones,
+  Image as ImageIcon,
+  Music,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -44,6 +48,8 @@ export default function AdminDashboardPage() {
     donations: [],
     subscribers: [],
     reports: [],
+    photos: [],
+    audios: [],
   });
 
   const [newReport, setNewReport] = useState({
@@ -60,6 +66,28 @@ export default function AdminDashboardPage() {
     pdfUrl: '',
   });
   const [showAddReportModal, setShowAddReportModal] = useState(false);
+
+  const [newPhoto, setNewPhoto] = useState({
+    title: '',
+    category: 'evangelisation',
+    date: 'Mars 2026',
+    location: 'Thomonde, Plateau Central',
+    image: '',
+    caption: '',
+  });
+  const [showAddPhotoModal, setShowAddPhotoModal] = useState(false);
+
+  const [newAudio, setNewAudio] = useState({
+    title: '',
+    speaker: 'Pasteur Évangéliste AMA',
+    event: 'Croisade d\'Évangélisation Thomonde',
+    duration: '45:00',
+    category: 'theologie',
+    date: 'Mars 2026',
+    audioSrc: '',
+    description: '',
+  });
+  const [showAddAudioModal, setShowAddAudioModal] = useState(false);
 
 
   const [editStats, setEditStats] = useState({
@@ -240,6 +268,66 @@ export default function AdminDashboardPage() {
       highlights: '',
       metrics: '',
       pdfUrl: '',
+    });
+  };
+
+  const handleCreatePhoto = async (e) => {
+    e.preventDefault();
+    if (!newPhoto.title || !newPhoto.image) {
+      alert('Veuillez renseigner au moins le titre et le lien de l\'image.');
+      return;
+    }
+
+    await handleAction('photo', 'create', 'new', {
+      title: newPhoto.title,
+      category: newPhoto.category || 'evangelisation',
+      date: newPhoto.date || 'Mars 2026',
+      location: newPhoto.location || 'Thomonde, Haïti',
+      image: newPhoto.image,
+      caption: newPhoto.caption || newPhoto.title,
+      isPublished: true,
+    });
+
+    setShowAddPhotoModal(false);
+    setNewPhoto({
+      title: '',
+      category: 'evangelisation',
+      date: 'Mars 2026',
+      location: 'Thomonde, Plateau Central',
+      image: '',
+      caption: '',
+    });
+  };
+
+  const handleCreateAudio = async (e) => {
+    e.preventDefault();
+    if (!newAudio.title || !newAudio.audioSrc) {
+      alert('Veuillez renseigner au moins le titre et le lien audio (MP3/SoundCloud/URL).');
+      return;
+    }
+
+    await handleAction('audio', 'create', 'new', {
+      title: newAudio.title,
+      speaker: newAudio.speaker || 'Comité Pastoral AMA',
+      event: newAudio.event || 'Édification & Conférence',
+      duration: newAudio.duration || '45:00',
+      category: newAudio.category || 'theologie',
+      date: newAudio.date || 'Mars 2026',
+      audioSrc: newAudio.audioSrc,
+      description: newAudio.description || newAudio.title,
+      isPublished: true,
+    });
+
+    setShowAddAudioModal(false);
+    setNewAudio({
+      title: '',
+      speaker: 'Pasteur Évangéliste AMA',
+      event: 'Croisade d\'Évangélisation Thomonde',
+      duration: '45:00',
+      category: 'theologie',
+      date: 'Mars 2026',
+      audioSrc: '',
+      description: '',
     });
   };
 
@@ -471,6 +559,26 @@ export default function AdminDashboardPage() {
         >
           <BookOpen className="w-4 h-4 text-amber-600" />
           <span>📑 Rapports Périodiques ({(data.reports || []).length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('photos')}
+          className={`flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
+            activeTab === 'photos' ? 'bg-white text-purple-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Camera className="w-4 h-4 text-purple-600" />
+          <span>📸 Galerie Photos ({(data.photos || []).length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('audios')}
+          className={`flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
+            activeTab === 'audios' ? 'bg-white text-teal-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Headphones className="w-4 h-4 text-teal-600" />
+          <span>🎙️ Audios & Messages ({(data.audios || []).length})</span>
         </button>
 
         <button
@@ -1104,6 +1212,500 @@ export default function AdminDashboardPage() {
                   className="px-5 py-2 rounded-xl bg-ama-blue-900 hover:bg-ama-blue-800 text-white font-bold shadow-md transition-colors"
                 >
                   Enregistrer & Publier
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* TAB PHOTOS: GESTION DE LA GALERIE VISUELLE */}
+      {activeTab === 'photos' && (
+        <div className="bg-white rounded-3xl border border-purple-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-purple-100 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-purple-900 bg-purple-100 px-2.5 py-0.5 rounded-full">
+                  Médiathèque Dynamique
+                </span>
+                <span className="text-xs text-slate-500 font-mono">
+                  {(data.photos || []).length} photo(s)
+                </span>
+              </div>
+              <h2 className="font-serif font-bold text-xl text-slate-900 mt-1">
+                Gestion de la Galerie Photos & Visuels
+              </h2>
+              <p className="text-xs text-slate-500">
+                Ajoutez, gérez et publiez les clichés des croisades, championnats et actions de terrain affichés dans la Médiathèque.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowAddPhotoModal(true)}
+              className="inline-flex items-center gap-2 bg-purple-900 hover:bg-purple-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-colors"
+            >
+              <Plus className="w-4 h-4 text-purple-300" />
+              <span>Ajouter une Photo</span>
+            </button>
+          </div>
+
+          {/* Photos Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-700">
+              <thead className="bg-slate-50 text-slate-500 uppercase font-bold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th className="p-3">Aperçu</th>
+                  <th className="p-3">Titre & Légende</th>
+                  <th className="p-3">Catégorie</th>
+                  <th className="p-3">Lieu & Date</th>
+                  <th className="p-3">Statut</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(!data.photos || data.photos.length === 0) ? (
+                  <tr>
+                    <td colSpan="6" className="p-6 text-center text-slate-400">
+                      Aucune photo enregistrée. Cliquez sur « Ajouter une Photo ».
+                    </td>
+                  </tr>
+                ) : (
+                  data.photos.map((p) => (
+                    <tr key={p.id} className="hover:bg-slate-50">
+                      <td className="p-3">
+                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 relative">
+                          <img
+                            src={p.image}
+                            alt={p.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/hero-bg.jpg';
+                            }}
+                          />
+                        </div>
+                      </td>
+                      <td className="p-3 font-semibold text-slate-900 max-w-xs">
+                        <div>{p.title}</div>
+                        <div className="text-slate-400 text-[10px] line-clamp-1 mt-0.5">{p.caption}</div>
+                      </td>
+                      <td className="p-3">
+                        <span className="uppercase text-[10px] font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded">
+                          {p.category}
+                        </span>
+                      </td>
+                      <td className="p-3 text-slate-600 whitespace-nowrap">
+                        <div className="font-medium text-slate-800">{p.location || '—'}</div>
+                        <div className="text-slate-400 text-[10px]">{p.date || '—'}</div>
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            p.isPublished !== false
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-slate-200 text-slate-700'
+                          }`}
+                        >
+                          {p.isPublished !== false ? '✓ Publié' : 'Masqué'}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right whitespace-nowrap space-x-1">
+                        <button
+                          onClick={() =>
+                            handleAction('photo', 'togglePublished', p.id, {
+                              isPublished: p.isPublished === false ? true : false,
+                            })
+                          }
+                          className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg"
+                          title={p.isPublished !== false ? 'Masquer la photo' : 'Publier la photo'}
+                        >
+                          {p.isPublished !== false ? (
+                            <EyeOff className="w-3.5 h-3.5" />
+                          ) : (
+                            <Eye className="w-3.5 h-3.5 text-emerald-600" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('Supprimer définitivement cette photo ?')) {
+                              handleAction('photo', 'delete', p.id);
+                            }
+                          }}
+                          className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL CREATION PHOTO */}
+      {showAddPhotoModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white max-w-lg w-full rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-serif font-bold text-xl text-slate-900">
+                  Ajouter une Photo à la Galerie
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Alimentez le diaporama et la médiathèque publique.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAddPhotoModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreatePhoto} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Titre de la Photo * :</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Croisade Évangélique de Bassin-Magnan"
+                  value={newPhoto.title}
+                  onChange={(e) => setNewPhoto({ ...newPhoto, title: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Lien de l'Image (URL ou chemin local) * :</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: /images/croisade.jpg ou https://images.unsplash.com/..."
+                  value={newPhoto.image}
+                  onChange={(e) => setNewPhoto({ ...newPhoto, image: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Catégorie * :</label>
+                  <select
+                    value={newPhoto.category}
+                    onChange={(e) => setNewPhoto({ ...newPhoto, category: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-900 focus:outline-hidden"
+                  >
+                    <option value="evangelisation">Évangélisation</option>
+                    <option value="sport">Tournois & Sports</option>
+                    <option value="social">Action Sociale</option>
+                    <option value="theologie">Génie Biblique</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Lieu :</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Thomonde, Plateau Central"
+                    value={newPhoto.location}
+                    onChange={(e) => setNewPhoto({ ...newPhoto, location: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-900 focus:outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Date :</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Mars 2026, Août 2025"
+                  value={newPhoto.date}
+                  onChange={(e) => setNewPhoto({ ...newPhoto, date: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Légende / Description courte :</label>
+                <textarea
+                  rows={2}
+                  placeholder="Description du moment photographié..."
+                  value={newPhoto.caption}
+                  onChange={(e) => setNewPhoto({ ...newPhoto, caption: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddPhotoModal(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-purple-900 hover:bg-purple-800 text-white font-bold shadow-md transition-colors"
+                >
+                  Ajouter à la Galerie
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* TAB AUDIOS: GESTION DES ENSEIGNEMENTS AUDIO */}
+      {activeTab === 'audios' && (
+        <div className="bg-white rounded-3xl border border-teal-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-100 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-900 bg-teal-100 px-2.5 py-0.5 rounded-full">
+                  Prédications & Formations
+                </span>
+                <span className="text-xs text-slate-500 font-mono">
+                  {(data.audios || []).length} audio(s)
+                </span>
+              </div>
+              <h2 className="font-serif font-bold text-xl text-slate-900 mt-1">
+                Gestion des Enseignements & Podcasts Audio
+              </h2>
+              <p className="text-xs text-slate-500">
+                Publiez les enregistrements de messages, conférences et exhortations écoutables en ligne.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowAddAudioModal(true)}
+              className="inline-flex items-center gap-2 bg-teal-800 hover:bg-teal-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-colors"
+            >
+              <Plus className="w-4 h-4 text-teal-300" />
+              <span>Publier un Audio</span>
+            </button>
+          </div>
+
+          {/* Audios Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-700">
+              <thead className="bg-slate-50 text-slate-500 uppercase font-bold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th className="p-3">Titre du Message</th>
+                  <th className="p-3">Orateur / Intervenant</th>
+                  <th className="p-3">Événement & Durée</th>
+                  <th className="p-3">Catégorie</th>
+                  <th className="p-3">Statut</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(!data.audios || data.audios.length === 0) ? (
+                  <tr>
+                    <td colSpan="6" className="p-6 text-center text-slate-400">
+                      Aucun enregistrement audio pour le moment. Cliquez sur « Publier un Audio ».
+                    </td>
+                  </tr>
+                ) : (
+                  data.audios.map((a) => (
+                    <tr key={a.id} className="hover:bg-slate-50">
+                      <td className="p-3 font-semibold text-slate-900 max-w-xs">
+                        <div className="flex items-center gap-1.5">
+                          <Headphones className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                          <span>{a.title}</span>
+                        </div>
+                        <div className="text-slate-400 text-[10px] line-clamp-1 mt-0.5">{a.description}</div>
+                      </td>
+                      <td className="p-3 text-slate-800 font-medium whitespace-nowrap">{a.speaker}</td>
+                      <td className="p-3 text-slate-600 whitespace-nowrap">
+                        <div>{a.event || '—'}</div>
+                        <div className="text-slate-400 text-[10px] font-mono">{a.duration || '—'} • {a.date}</div>
+                      </td>
+                      <td className="p-3">
+                        <span className="uppercase text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded">
+                          {a.category}
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            a.isPublished !== false
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-slate-200 text-slate-700'
+                          }`}
+                        >
+                          {a.isPublished !== false ? '✓ Publié' : 'Masqué'}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right whitespace-nowrap space-x-1">
+                        <button
+                          onClick={() =>
+                            handleAction('audio', 'togglePublished', a.id, {
+                              isPublished: a.isPublished === false ? true : false,
+                            })
+                          }
+                          className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg"
+                          title={a.isPublished !== false ? 'Masquer le message' : 'Publier le message'}
+                        >
+                          {a.isPublished !== false ? (
+                            <EyeOff className="w-3.5 h-3.5" />
+                          ) : (
+                            <Eye className="w-3.5 h-3.5 text-emerald-600" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('Supprimer définitivement cet audio ?')) {
+                              handleAction('audio', 'delete', a.id);
+                            }
+                          }}
+                          className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL CREATION AUDIO */}
+      {showAddAudioModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white max-w-lg w-full rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-serif font-bold text-xl text-slate-900">
+                  Publier un Enseignement Audio
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Diffusez une prédication ou un podcast pour l'édification de l'assemblée.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAddAudioModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateAudio} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Titre de l'Enseignement * :</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Le Mandat de la Grande Commission en Milieu Rural"
+                  value={newAudio.title}
+                  onChange={(e) => setNewAudio({ ...newAudio, title: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Lien Audio (Fichier MP3 ou Stream URL) * :</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: /audio/message.mp3 ou https://.../audio.mp3"
+                  value={newAudio.audioSrc}
+                  onChange={(e) => setNewAudio({ ...newAudio, audioSrc: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Orateur / Intervenant * :</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex: Pasteur Jean-Baptiste Paul"
+                    value={newAudio.speaker}
+                    onChange={(e) => setNewAudio({ ...newAudio, speaker: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Événement / Cadre :</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Croisade d'Évangélisation Thomonde"
+                    value={newAudio.event}
+                    onChange={(e) => setNewAudio({ ...newAudio, event: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Catégorie * :</label>
+                  <select
+                    value={newAudio.category}
+                    onChange={(e) => setNewAudio({ ...newAudio, category: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                  >
+                    <option value="theologie">Théologie & Doctrine</option>
+                    <option value="evangelisation">Évangélisation</option>
+                    <option value="priere">Prière & Intercession</option>
+                    <option value="jeunesse">Jeunesse & Témoignages</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Durée :</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 45:00"
+                    value={newAudio.duration}
+                    onChange={(e) => setNewAudio({ ...newAudio, duration: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Date :</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Mars 2026"
+                    value={newAudio.date}
+                    onChange={(e) => setNewAudio({ ...newAudio, date: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Description / Résumé du Message :</label>
+                <textarea
+                  rows={3}
+                  placeholder="Points clés abordés et versets de référence..."
+                  value={newAudio.description}
+                  onChange={(e) => setNewAudio({ ...newAudio, description: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-800 focus:outline-hidden"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddAudioModal(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-teal-800 hover:bg-teal-700 text-white font-bold shadow-md transition-colors"
+                >
+                  Publier l'Enseignement
                 </button>
               </div>
             </form>

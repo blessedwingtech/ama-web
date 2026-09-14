@@ -40,42 +40,58 @@ export default function MediaPage() {
   // Gallery states
   const [activePhotoCategory, setActivePhotoCategory] = useState('all');
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [photosList, setPhotosList] = useState(photoGallery);
+  const [audiosList, setAudiosList] = useState(audioRecordings);
 
   // Dynamic Reports state from DB
   const [reportsList, setReportsList] = useState(periodicReports);
-  const [loadingReports, setLoadingReports] = useState(false);
+  const [loadingContent, setLoadingContent] = useState(false);
 
   // Reports segmentation states
   const [selectedReportPeriod, setSelectedReportPeriod] = useState('all');
   const [selectedReportCategory, setSelectedReportCategory] = useState('all');
   const [activeReportModal, setActiveReportModal] = useState(null);
 
-  // Fetch dynamic reports from database API
+  // Fetch dynamic reports & media from database API
   React.useEffect(() => {
-    const fetchDynamicReports = async () => {
+    const fetchDynamicContent = async () => {
       try {
-        setLoadingReports(true);
-        const res = await fetch('/api/reports');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.reports && data.reports.length > 0) {
-            setReportsList(data.reports);
+        setLoadingContent(true);
+        const [repRes, mediaRes] = await Promise.all([
+          fetch('/api/reports').catch(() => null),
+          fetch('/api/media').catch(() => null),
+        ]);
+
+        if (repRes && repRes.ok) {
+          const repData = await repRes.json();
+          if (repData.reports && repData.reports.length > 0) {
+            setReportsList(repData.reports);
+          }
+        }
+
+        if (mediaRes && mediaRes.ok) {
+          const mediaData = await mediaRes.json();
+          if (mediaData.photos && mediaData.photos.length > 0) {
+            setPhotosList(mediaData.photos);
+          }
+          if (mediaData.audios && mediaData.audios.length > 0) {
+            setAudiosList(mediaData.audios);
           }
         }
       } catch (err) {
-        console.warn('Utilisation des rapports de secours:', err);
+        console.warn('Utilisation des médias de secours:', err);
       } finally {
-        setLoadingReports(false);
+        setLoadingContent(false);
       }
     };
-    fetchDynamicReports();
+    fetchDynamicContent();
   }, []);
 
   // Filter photos
   const filteredPhotos =
     activePhotoCategory === 'all'
-      ? photoGallery
-      : photoGallery.filter((p) => p.category === activePhotoCategory);
+      ? photosList
+      : photosList.filter((p) => p.category === activePhotoCategory);
 
   // Filter dynamic reports by period & category
   const filteredReports = reportsList.filter((report) => {
@@ -441,7 +457,7 @@ export default function MediaPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {audioRecordings.map((audio) => (
+          {audiosList.map((audio) => (
             <AudioPlayer key={audio.id} audio={audio} />
           ))}
         </div>

@@ -129,6 +129,50 @@ export async function POST(request) {
           },
         });
       }
+    } else if (model === 'photo') {
+      if (action === 'togglePublished') {
+        result = await prisma.galleryPhoto.update({
+          where: { id },
+          data: { isPublished: Boolean(data.isPublished) },
+        });
+      } else if (action === 'create') {
+        result = await prisma.galleryPhoto.create({
+          data: {
+            title: data.title,
+            category: data.category || 'evangelisation',
+            date: data.date || new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+            location: data.location || 'Thomonde, Centre',
+            image: data.image,
+            caption: data.caption,
+            isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+          },
+        });
+      } else if (action === 'delete') {
+        result = await prisma.galleryPhoto.delete({ where: { id } });
+      }
+    } else if (model === 'audio') {
+      if (action === 'togglePublished') {
+        result = await prisma.audioRecording.update({
+          where: { id },
+          data: { isPublished: Boolean(data.isPublished) },
+        });
+      } else if (action === 'create') {
+        result = await prisma.audioRecording.create({
+          data: {
+            title: data.title,
+            speaker: data.speaker,
+            event: data.event,
+            duration: data.duration || '45:00',
+            category: data.category || 'theologie',
+            date: data.date || new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+            audioSrc: data.audioSrc,
+            description: data.description,
+            isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+          },
+        });
+      } else if (action === 'delete') {
+        result = await prisma.audioRecording.delete({ where: { id } });
+      }
     }
 
     return NextResponse.json({

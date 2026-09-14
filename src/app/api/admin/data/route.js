@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { periodicReports } from '@/data/reports';
+import { photoGallery, audioRecordings } from '@/data/media';
 
 const ADMIN_KEY = process.env.ADMIN_SECRET_KEY || 'AMA2025*Admin';
 
@@ -22,17 +23,21 @@ export async function POST(request) {
     let donations = [];
     let subscribers = [];
     let reports = [];
+    let photos = [];
+    let audios = [];
     let siteStats = null;
 
     if (process.env.DATABASE_URL) {
       try {
-        [contacts, prayers, memberships, donations, subscribers, reports, siteStats] = await Promise.all([
+        [contacts, prayers, memberships, donations, subscribers, reports, photos, audios, siteStats] = await Promise.all([
           prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.prayerRequest.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.membershipApplication.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.donationIntent.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.report.findMany({ orderBy: { createdAt: 'desc' } }),
+          prisma.galleryPhoto.findMany({ orderBy: { createdAt: 'desc' } }),
+          prisma.audioRecording.findMany({ orderBy: { createdAt: 'desc' } }),
           prisma.siteStatistic.findUnique({ where: { id: 'global-stats' } }),
         ]);
       } catch (dbError) {
@@ -40,9 +45,15 @@ export async function POST(request) {
       }
     }
 
-    // Fallback if reports table is empty initially
+    // Fallbacks if tables are empty initially
     if (!reports || reports.length === 0) {
       reports = periodicReports;
+    }
+    if (!photos || photos.length === 0) {
+      photos = photoGallery;
+    }
+    if (!audios || audios.length === 0) {
+      audios = audioRecordings;
     }
 
     // Compute stats
@@ -80,6 +91,8 @@ export async function POST(request) {
         donations,
         subscribers,
         reports,
+        photos,
+        audios,
         siteStats,
       },
     });
