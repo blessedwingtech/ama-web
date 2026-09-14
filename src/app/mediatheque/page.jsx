@@ -41,10 +41,35 @@ export default function MediaPage() {
   const [activePhotoCategory, setActivePhotoCategory] = useState('all');
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
+  // Dynamic Reports state from DB
+  const [reportsList, setReportsList] = useState(periodicReports);
+  const [loadingReports, setLoadingReports] = useState(false);
+
   // Reports segmentation states
   const [selectedReportPeriod, setSelectedReportPeriod] = useState('all');
   const [selectedReportCategory, setSelectedReportCategory] = useState('all');
   const [activeReportModal, setActiveReportModal] = useState(null);
+
+  // Fetch dynamic reports from database API
+  React.useEffect(() => {
+    const fetchDynamicReports = async () => {
+      try {
+        setLoadingReports(true);
+        const res = await fetch('/api/reports');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.reports && data.reports.length > 0) {
+            setReportsList(data.reports);
+          }
+        }
+      } catch (err) {
+        console.warn('Utilisation des rapports de secours:', err);
+      } finally {
+        setLoadingReports(false);
+      }
+    };
+    fetchDynamicReports();
+  }, []);
 
   // Filter photos
   const filteredPhotos =
@@ -52,8 +77,8 @@ export default function MediaPage() {
       ? photoGallery
       : photoGallery.filter((p) => p.category === activePhotoCategory);
 
-  // Filter reports by period & category
-  const filteredReports = periodicReports.filter((report) => {
+  // Filter dynamic reports by period & category
+  const filteredReports = reportsList.filter((report) => {
     const matchesPeriod =
       selectedReportPeriod === 'all' || report.periodId === selectedReportPeriod;
     const matchesCategory =

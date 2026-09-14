@@ -32,15 +32,64 @@ import {
 } from 'lucide-react';
 
 export default function StatistiquesPage() {
-  const [activeQuarterIndex, setActiveQuarterIndex] = useState(quarterlyEvolution.length - 1);
-  const [selectedLocality, setSelectedLocality] = useState(localityImpact[0]);
+  const [statsData, setStatsData] = useState({
+    globalStats: globalImpactStats,
+    quarterlyEvolution,
+    localityImpact,
+    pillarsDistribution,
+    financialTransparency,
+    visionMilestones,
+  });
+  const [loading, setLoading] = useState(false);
+
+  React.useEffect(() => {
+    const fetchDynamicStats = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/statistics');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            setStatsData(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('Utilisation des stats locales:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDynamicStats();
+  }, []);
+
+  const {
+    globalStats,
+    quarterlyEvolution: quarters,
+    localityImpact: localities,
+    pillarsDistribution: pillars,
+    financialTransparency: finances,
+    visionMilestones: milestones,
+  } = statsData;
+
+  const [activeQuarterIndex, setActiveQuarterIndex] = useState(0);
+  const [selectedLocality, setSelectedLocality] = useState(localities[0] || localityImpact[0]);
+
+  // Update activeQuarter and selectedLocality when data updates
+  React.useEffect(() => {
+    if (quarters && quarters.length > 0) {
+      setActiveQuarterIndex(quarters.length - 1);
+    }
+    if (localities && localities.length > 0) {
+      setSelectedLocality(localities[0]);
+    }
+  }, [quarters, localities]);
 
   const progressPercent = Math.min(
     100,
-    ((globalImpactStats.currentReachedSouls / globalImpactStats.visionTarget) * 100).toFixed(1)
+    (((globalStats?.currentReachedSouls || 0) / (globalStats?.visionTarget || 100000)) * 100).toFixed(1)
   );
 
-  const activeQuarter = quarterlyEvolution[activeQuarterIndex];
+  const activeQuarter = (quarters && quarters[activeQuarterIndex]) || quarterlyEvolution[0];
 
   return (
     <div className="py-10 sm:py-16 space-y-14 sm:space-y-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,9 +143,9 @@ export default function StatistiquesPage() {
             </div>
             <div className="text-left md:text-right">
               <span className="text-3xl sm:text-4xl font-serif font-bold text-amber-400 font-mono">
-                {globalImpactStats.currentReachedSouls.toLocaleString()}
+                {globalStats?.currentReachedSouls?.toLocaleString()}
               </span>
-              <span className="text-slate-400 text-sm font-medium"> / {globalImpactStats.visionTarget.toLocaleString()} âmes</span>
+              <span className="text-slate-400 text-sm font-medium"> / {globalStats?.visionTarget?.toLocaleString()} âmes</span>
               <p className="text-xs text-slate-400 mt-0.5">Personnes sensibilisées & touchées sur le terrain</p>
             </div>
           </div>
@@ -123,7 +172,7 @@ export default function StatistiquesPage() {
                 <span>Décisions</span>
               </div>
               <div className="text-xl sm:text-2xl font-serif font-bold text-white font-mono">
-                +{globalImpactStats.confirmedDecisionsForChrist}
+                +{globalStats?.confirmedDecisionsForChrist}
               </div>
               <p className="text-[11px] text-slate-400">Engagements de foi</p>
             </div>
@@ -134,7 +183,7 @@ export default function StatistiquesPage() {
                 <span>Églises</span>
               </div>
               <div className="text-xl sm:text-2xl font-serif font-bold text-white font-mono">
-                {globalImpactStats.partnerChurches}
+                {globalStats?.partnerChurches}
               </div>
               <p className="text-[11px] text-slate-400">Assemblées associées</p>
             </div>
@@ -145,7 +194,7 @@ export default function StatistiquesPage() {
                 <span>Jeunesse</span>
               </div>
               <div className="text-xl sm:text-2xl font-serif font-bold text-white font-mono">
-                {globalImpactStats.youthAthletesEngaged.toLocaleString()}
+                {globalStats?.youthAthletesEngaged?.toLocaleString()}
               </div>
               <p className="text-[11px] text-slate-400">Participants aux tournois</p>
             </div>
@@ -156,7 +205,7 @@ export default function StatistiquesPage() {
                 <span>Bibles</span>
               </div>
               <div className="text-xl sm:text-2xl font-serif font-bold text-white font-mono">
-                {globalImpactStats.biblesDistributed}
+                {globalStats?.biblesDistributed}
               </div>
               <p className="text-[11px] text-slate-400">Bibles & portions données</p>
             </div>
@@ -167,7 +216,7 @@ export default function StatistiquesPage() {
                 <span>Secours</span>
               </div>
               <div className="text-xl sm:text-2xl font-serif font-bold text-white font-mono">
-                {globalImpactStats.socialAidBeneficiaries}
+                {globalStats?.socialAidBeneficiaries}
               </div>
               <p className="text-[11px] text-slate-400">Familles secourues</p>
             </div>
@@ -178,7 +227,7 @@ export default function StatistiquesPage() {
                 <span>Ouvriers</span>
               </div>
               <div className="text-xl sm:text-2xl font-serif font-bold text-white font-mono">
-                {globalImpactStats.activeVolunteers}+
+                {globalStats?.activeVolunteers}+
               </div>
               <p className="text-[11px] text-slate-400">Évangélistes & bénévoles</p>
             </div>
@@ -201,7 +250,7 @@ export default function StatistiquesPage() {
 
           {/* Period Selector Tabs */}
           <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
-            {quarterlyEvolution.map((q, idx) => (
+            {quarters.map((q, idx) => (
               <button
                 key={q.quarter}
                 onClick={() => setActiveQuarterIndex(idx)}
@@ -315,7 +364,7 @@ export default function StatistiquesPage() {
               Historique Cumulé des Trimestres (T3 2025 → 2026) :
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {quarterlyEvolution.map((item, i) => (
+              {quarters.map((item, i) => (
                 <div
                   key={i}
                   className={`p-3 rounded-xl border text-center transition-all ${
@@ -374,8 +423,8 @@ export default function StatistiquesPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {localityImpact.map((loc) => {
-                    const isSelected = selectedLocality.id === loc.id;
+                  {localities.map((loc) => {
+                    const isSelected = selectedLocality?.id === loc.id;
                     return (
                       <tr
                         key={loc.id}
@@ -418,33 +467,33 @@ export default function StatistiquesPage() {
                   Fiche Zone
                 </span>
                 <span className="text-xs font-mono text-slate-400">
-                  {selectedLocality.percentage}% de l'impact
+                  {selectedLocality?.percentage}% de l'impact
                 </span>
               </div>
 
               <div>
                 <h4 className="text-xl font-serif font-bold text-white leading-tight">
-                  {selectedLocality.name}
+                  {selectedLocality?.name}
                 </h4>
                 <p className="text-xs text-amber-300 font-medium mt-0.5">
-                  Commune de {selectedLocality.commune}
+                  Commune de {selectedLocality?.commune}
                 </p>
               </div>
 
               <div className="p-4 bg-slate-800/80 rounded-2xl border border-slate-700/80 space-y-3">
                 <div className="text-xs text-slate-300">
                   <span className="text-slate-400">Action principale menée :</span>
-                  <p className="font-semibold text-white mt-0.5">{selectedLocality.keyAction}</p>
+                  <p className="font-semibold text-white mt-0.5">{selectedLocality?.keyAction}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-700 text-xs">
                   <div>
                     <span className="text-slate-400">Âmes atteintes :</span>
-                    <p className="font-bold text-white font-mono text-base">{selectedLocality.soulsReached.toLocaleString()}</p>
+                    <p className="font-bold text-white font-mono text-base">{selectedLocality?.soulsReached?.toLocaleString()}</p>
                   </div>
                   <div>
                     <span className="text-slate-400">Décisions :</span>
-                    <p className="font-bold text-amber-400 font-mono text-base">+{selectedLocality.decisions}</p>
+                    <p className="font-bold text-amber-400 font-mono text-base">+{selectedLocality?.decisions}</p>
                   </div>
                 </div>
               </div>
@@ -482,7 +531,7 @@ export default function StatistiquesPage() {
           </div>
 
           <div className="space-y-4">
-            {pillarsDistribution.map((pillar, idx) => (
+            {pillars.map((pillar, idx) => (
               <div key={idx} className="space-y-1.5">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-bold text-slate-800">{pillar.name}</span>
@@ -518,27 +567,27 @@ export default function StatistiquesPage() {
                 Taux d'Affectation Terrain
               </span>
               <div className="text-3xl font-serif font-bold text-emerald-800 font-mono">
-                {financialTransparency.fieldAllocationRate}%
+                {finances.fieldAllocationRate}%
               </div>
               <p className="text-[11px] text-emerald-700">Dépensé directement pour les missions & aides</p>
             </div>
             <div className="text-right">
               <span className="text-xs text-slate-500">Frais administratifs :</span>
               <div className="text-lg font-bold text-slate-700 font-mono">
-                {financialTransparency.adminOverheadRate}%
+                {finances.adminOverheadRate}%
               </div>
             </div>
           </div>
 
           <div className="space-y-3 pt-1">
             <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-              Répartition des dépenses auditées ({financialTransparency.totalMobilizedHtg.toLocaleString()} HTG) :
+              Répartition des dépenses auditées ({finances.totalMobilizedHtg?.toLocaleString()} HTG) :
             </h4>
-            {financialTransparency.breakdown.map((item, i) => (
+            {finances.breakdown.map((item, i) => (
               <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100">
                 <span className="text-slate-600 max-w-[65%]">{item.label}</span>
                 <span className="font-mono font-bold text-slate-900 whitespace-nowrap">
-                  {item.percentage}% ({item.amountHtg.toLocaleString()} HTG)
+                  {item.percentage}% ({item.amountHtg?.toLocaleString()} HTG)
                 </span>
               </div>
             ))}
@@ -561,7 +610,7 @@ export default function StatistiquesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-4">
-          {visionMilestones.map((ms, idx) => (
+          {milestones.map((ms, idx) => (
             <div
               key={idx}
               className={`p-5 rounded-2xl border flex flex-col justify-between space-y-3 ${

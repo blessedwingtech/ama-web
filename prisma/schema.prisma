@@ -108,3 +108,23 @@ model Report {
   @@map("reports")
 }
 
+model SiteStatistic {
+  id                          String   @id @default("global-stats")
+  visionTarget                Int      @default(100000)
+  currentReachedSouls         Int      @default(12450)
+  confirmedDecisionsForChrist  Int      @default(424)
+  partnerChurches             Int      @default(24)
+  youthAthletesEngaged        Int      @default(1850)
+  biblesDistributed           Int      @default(875)
+  socialAidBeneficiaries      Int      @default(365)
+  activeVolunteers            Int      @default(120)
+  totalMobilizedHtg           Float    @default(1135000)
+  fieldAllocationRate         Float    @default(92.4)
+  quarterlyData               Json?
+  localityData                Json?
+  updatedAt                   DateTime @updatedAt
+
+  @@map("site_statistics")
+}
+
+

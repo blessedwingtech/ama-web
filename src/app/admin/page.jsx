@@ -25,6 +25,9 @@ import {
   Eye,
   EyeOff,
   FileText,
+  BarChart3,
+  TrendingUp,
+  Save,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -59,6 +62,21 @@ export default function AdminDashboardPage() {
   const [showAddReportModal, setShowAddReportModal] = useState(false);
 
 
+  const [editStats, setEditStats] = useState({
+    visionTarget: 100000,
+    currentReachedSouls: 12450,
+    confirmedDecisionsForChrist: 424,
+    partnerChurches: 24,
+    youthAthletesEngaged: 1850,
+    biblesDistributed: 875,
+    socialAidBeneficiaries: 365,
+    activeVolunteers: 120,
+    totalMobilizedHtg: 1135000,
+    fieldAllocationRate: 92.4,
+  });
+  const [statsSaving, setStatsSaving] = useState(false);
+  const [statsMessage, setStatsMessage] = useState('');
+
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -84,6 +102,20 @@ export default function AdminDashboardPage() {
         setIsAuthenticated(true);
         setStats(resData.stats);
         setData(resData.data);
+        if (resData.data.siteStats) {
+          setEditStats({
+            visionTarget: resData.data.siteStats.visionTarget || 100000,
+            currentReachedSouls: resData.data.siteStats.currentReachedSouls || 12450,
+            confirmedDecisionsForChrist: resData.data.siteStats.confirmedDecisionsForChrist || 424,
+            partnerChurches: resData.data.siteStats.partnerChurches || 24,
+            youthAthletesEngaged: resData.data.siteStats.youthAthletesEngaged || 1850,
+            biblesDistributed: resData.data.siteStats.biblesDistributed || 875,
+            socialAidBeneficiaries: resData.data.siteStats.socialAidBeneficiaries || 365,
+            activeVolunteers: resData.data.siteStats.activeVolunteers || 120,
+            totalMobilizedHtg: resData.data.siteStats.totalMobilizedHtg || 1135000,
+            fieldAllocationRate: resData.data.siteStats.fieldAllocationRate || 92.4,
+          });
+        }
         localStorage.setItem('ama_admin_key', keyToUse || authKey);
       } else {
         setIsAuthenticated(false);
@@ -210,6 +242,22 @@ export default function AdminDashboardPage() {
       pdfUrl: '',
     });
   };
+
+  const handleSaveStatistics = async (e) => {
+    e.preventDefault();
+    setStatsSaving(true);
+    setStatsMessage('');
+    try {
+      await handleAction('statistics', 'update', 'global-stats', editStats);
+      setStatsMessage('✓ Statistiques institutionnelles enregistrées et publiées en direct avec succès !');
+      setTimeout(() => setStatsMessage(''), 5000);
+    } catch (err) {
+      alert('Erreur lors de la sauvegarde des statistiques : ' + err.message);
+    } finally {
+      setStatsSaving(false);
+    }
+  };
+
 
 
   // 1. LOGIN SCREEN IF NOT AUTHENTICATED
@@ -423,6 +471,16 @@ export default function AdminDashboardPage() {
         >
           <BookOpen className="w-4 h-4 text-amber-600" />
           <span>📑 Rapports Périodiques ({(data.reports || []).length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('statistics')}
+          className={`flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
+            activeTab === 'statistics' ? 'bg-white text-blue-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <TrendingUp className="w-4 h-4 text-blue-600" />
+          <span>📈 Statistiques en Direct</span>
         </button>
       </div>
 
@@ -1052,6 +1110,192 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+
+      {/* TAB 6: STATISTIQUES EN DIRECT */}
+      {activeTab === 'statistics' && (
+        <div className="bg-white rounded-3xl border border-blue-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-blue-100 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded-full">
+                  Impact Analytique & Données Réelles
+                </span>
+              </div>
+              <h2 className="font-serif font-bold text-xl text-slate-900 mt-1">
+                Mise à Jour des Statistiques Officielles en Direct
+              </h2>
+              <p className="text-xs text-slate-500">
+                Ajustez les chiffres réels du ministère. Toute modification enregistrée ici met à jour immédiatement la page <code className="text-ama-blue-900 font-bold">/statistiques</code> et la jauge Vision 2050 pour tous les visiteurs.
+              </p>
+            </div>
+
+            {statsMessage && (
+              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{statsMessage}</span>
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleSaveStatistics} className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {/* Vision Target */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Objectif Vision 2050 (Âmes) :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.visionTarget}
+                  onChange={(e) => setEditStats({ ...editStats, visionTarget: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-base text-slate-900 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-slate-400">Objectif historique d'AMA (100 000)</p>
+              </div>
+
+              {/* Current Reached Souls */}
+              <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-amber-900">
+                  Âmes Touchées (Sur le terrain) :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.currentReachedSouls}
+                  onChange={(e) => setEditStats({ ...editStats, currentReachedSouls: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-amber-300 font-mono font-bold text-base text-amber-900 focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-amber-700/80">Nombre cumulé d'auditeurs aux croisades & tournois</p>
+              </div>
+
+              {/* Confirmed Decisions for Christ */}
+              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-900">
+                  Décisions pour Christ (Confirmées) :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.confirmedDecisionsForChrist}
+                  onChange={(e) => setEditStats({ ...editStats, confirmedDecisionsForChrist: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-emerald-300 font-mono font-bold text-base text-emerald-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-emerald-700/80">Conversions répertoriées avec suivi en église</p>
+              </div>
+
+              {/* Partner Churches */}
+              <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-blue-900">
+                  Églises Locales Partenaires :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.partnerChurches}
+                  onChange={(e) => setEditStats({ ...editStats, partnerChurches: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-blue-300 font-mono font-bold text-base text-blue-900 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-blue-700/80">Assemblées associées dans le Plateau Central</p>
+              </div>
+
+              {/* Youth Athletes Engaged */}
+              <div className="p-4 bg-indigo-50/50 rounded-2xl border border-indigo-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-indigo-900">
+                  Jeunes Participants aux Tournois :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.youthAthletesEngaged}
+                  onChange={(e) => setEditStats({ ...editStats, youthAthletesEngaged: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-indigo-300 font-mono font-bold text-base text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-indigo-700/80">Athlètes et joueurs enregistrés</p>
+              </div>
+
+              {/* Bibles Distributed */}
+              <div className="p-4 bg-purple-50/50 rounded-2xl border border-purple-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-900">
+                  Bibles & Nouveaux Testaments Donnés :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.biblesDistributed}
+                  onChange={(e) => setEditStats({ ...editStats, biblesDistributed: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-purple-300 font-mono font-bold text-base text-purple-900 focus:ring-2 focus:ring-purple-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-purple-700/80">Écritures saintes offertes aux communautés</p>
+              </div>
+
+              {/* Social Aid Beneficiaries */}
+              <div className="p-4 bg-rose-50/50 rounded-2xl border border-rose-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-rose-900">
+                  Familles Secourues (Diaconat) :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.socialAidBeneficiaries}
+                  onChange={(e) => setEditStats({ ...editStats, socialAidBeneficiaries: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-rose-300 font-mono font-bold text-base text-rose-900 focus:ring-2 focus:ring-rose-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-rose-700/80">Aide directe : vivres, lessive et soins aux anciens</p>
+              </div>
+
+              {/* Active Volunteers */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Ouvriers & Bénévoles Actifs :
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editStats.activeVolunteers}
+                  onChange={(e) => setEditStats({ ...editStats, activeVolunteers: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-base text-slate-900 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-slate-400">Évangélistes, arbitres et diacres mobilisés</p>
+              </div>
+
+              {/* Field Allocation Rate */}
+              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-200 space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-900">
+                  Taux d'Affectation Terrain (%) :
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  required
+                  value={editStats.fieldAllocationRate}
+                  onChange={(e) => setEditStats({ ...editStats, fieldAllocationRate: parseFloat(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-emerald-300 font-mono font-bold text-base text-emerald-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                />
+                <p className="text-[10px] text-emerald-700/80">Exemple: 92.4% pour les missions directes</p>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
+              <button
+                type="submit"
+                disabled={statsSaving}
+                className="inline-flex items-center gap-2 bg-ama-blue-900 hover:bg-ama-blue-800 text-white font-bold px-6 py-3 rounded-xl text-sm shadow-md transition-all disabled:opacity-50"
+              >
+                {statsSaving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 text-amber-400" />
+                    <span>Enregistrer & Mettre en Ligne Immédiatement</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
 
       {/* TAB 0: VUE GÉNÉRALE & RESSOURCES */}
       {activeTab === 'overview' && (

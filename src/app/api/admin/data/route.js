@@ -22,16 +22,18 @@ export async function POST(request) {
     let donations = [];
     let subscribers = [];
     let reports = [];
+    let siteStats = null;
 
     if (process.env.DATABASE_URL) {
       try {
-        [contacts, prayers, memberships, donations, subscribers, reports] = await Promise.all([
+        [contacts, prayers, memberships, donations, subscribers, reports, siteStats] = await Promise.all([
           prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.prayerRequest.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.membershipApplication.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.donationIntent.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.report.findMany({ orderBy: { createdAt: 'desc' } }),
+          prisma.siteStatistic.findUnique({ where: { id: 'global-stats' } }),
         ]);
       } catch (dbError) {
         console.warn('Admin: Postgres not connected or table not initialized, using data fallback:', dbError.message);
@@ -78,6 +80,7 @@ export async function POST(request) {
         donations,
         subscribers,
         reports,
+        siteStats,
       },
     });
   } catch (error) {

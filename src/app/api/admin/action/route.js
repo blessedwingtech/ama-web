@@ -94,6 +94,41 @@ export async function POST(request) {
       } else if (action === 'delete') {
         result = await prisma.report.delete({ where: { id } });
       }
+    } else if (model === 'statistics') {
+      if (action === 'update') {
+        result = await prisma.siteStatistic.upsert({
+          where: { id: 'global-stats' },
+          update: {
+            visionTarget: parseInt(data.visionTarget) || 100000,
+            currentReachedSouls: parseInt(data.currentReachedSouls) || 0,
+            confirmedDecisionsForChrist: parseInt(data.confirmedDecisionsForChrist) || 0,
+            partnerChurches: parseInt(data.partnerChurches) || 0,
+            youthAthletesEngaged: parseInt(data.youthAthletesEngaged) || 0,
+            biblesDistributed: parseInt(data.biblesDistributed) || 0,
+            socialAidBeneficiaries: parseInt(data.socialAidBeneficiaries) || 0,
+            activeVolunteers: parseInt(data.activeVolunteers) || 0,
+            totalMobilizedHtg: parseFloat(data.totalMobilizedHtg) || 0,
+            fieldAllocationRate: parseFloat(data.fieldAllocationRate) || 92.4,
+            quarterlyData: data.quarterlyData || undefined,
+            localityData: data.localityData || undefined,
+          },
+          create: {
+            id: 'global-stats',
+            visionTarget: parseInt(data.visionTarget) || 100000,
+            currentReachedSouls: parseInt(data.currentReachedSouls) || 12450,
+            confirmedDecisionsForChrist: parseInt(data.confirmedDecisionsForChrist) || 424,
+            partnerChurches: parseInt(data.partnerChurches) || 24,
+            youthAthletesEngaged: parseInt(data.youthAthletesEngaged) || 1850,
+            biblesDistributed: parseInt(data.biblesDistributed) || 875,
+            socialAidBeneficiaries: parseInt(data.socialAidBeneficiaries) || 365,
+            activeVolunteers: parseInt(data.activeVolunteers) || 120,
+            totalMobilizedHtg: parseFloat(data.totalMobilizedHtg) || 1135000,
+            fieldAllocationRate: parseFloat(data.fieldAllocationRate) || 92.4,
+            quarterlyData: data.quarterlyData || undefined,
+            localityData: data.localityData || undefined,
+          },
+        });
+      }
     }
 
     return NextResponse.json({
