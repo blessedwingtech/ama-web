@@ -110,7 +110,7 @@ export default function Header() {
           {/* Right Action Area */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             {/* Language Switcher */}
-            <div className="relative">
+            <div hidden className="relative">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -146,14 +146,14 @@ export default function Header() {
               )}
             </div>
 
-            {/* Donate CTA */}
-            <Link
+            {/* Donate CTA (Temporairement masqué) */}
+            {/* <Link
               href="/faire-un-don"
               className="flex items-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-md hover:shadow-lg hover:from-ama-gold-700 hover:to-amber-700 active:scale-95 transition-all"
             >
               <Heart className="w-4 h-4 fill-white" />
               <span>{t('nav.donate', 'Faire un Don')}</span>
-            </Link>
+            </Link> */}
           </div>
 
           {/* Mobile Menu & Language Button */}
@@ -170,13 +170,13 @@ export default function Header() {
               {currentLangObj.flag} {currentLangObj.code.toUpperCase()}
             </button>
 
-            <Link
+            {/* <Link
               href="/faire-un-don"
               className="flex items-center gap-1 bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs"
             >
               <Heart className="w-3.5 h-3.5 fill-white" />
               <span>Don</span>
-            </Link>
+            </Link> */}
 
             <button
               type="button"
@@ -237,7 +237,7 @@ export default function Header() {
               ))}
             </div>
 
-            <div className="pt-2">
+            {/* <div className="pt-2">
               <Link
                 href="/faire-un-don"
                 onClick={() => setMobileMenuOpen(false)}
@@ -246,7 +246,7 @@ export default function Header() {
                 <Heart className="w-4 h-4 fill-white" />
                 <span>{t('nav.donate', 'Faire un Don (MonCash / Natcash / Diaspora)')}</span>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
