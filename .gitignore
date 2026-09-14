@@ -26,8 +26,8 @@ yarn-error.log*
 .env*.local
 .env
 
-# Vercel / IDE
-.vercel
-.idea
-.vscode
-*.swp
+# Local confidential notes
+*.local.md
+TECHNICAL_MEMO.local.md
+TECH_DATA_CONFIDENTIAL.md
+
