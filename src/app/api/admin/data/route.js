@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { periodicReports } from '@/data/reports';
 
 const ADMIN_KEY = process.env.ADMIN_SECRET_KEY || 'AMA2025*Admin';
 
@@ -20,19 +21,26 @@ export async function POST(request) {
     let memberships = [];
     let donations = [];
     let subscribers = [];
+    let reports = [];
 
     if (process.env.DATABASE_URL) {
       try {
-        [contacts, prayers, memberships, donations, subscribers] = await Promise.all([
+        [contacts, prayers, memberships, donations, subscribers, reports] = await Promise.all([
           prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.prayerRequest.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.membershipApplication.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.donationIntent.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
+          prisma.report.findMany({ orderBy: { createdAt: 'desc' } }),
         ]);
       } catch (dbError) {
-        console.warn('Admin: Postgres not connected, returning mock/empty records:', dbError.message);
+        console.warn('Admin: Postgres not connected or table not initialized, using data fallback:', dbError.message);
       }
+    }
+
+    // Fallback if reports table is empty initially
+    if (!reports || reports.length === 0) {
+      reports = periodicReports;
     }
 
     // Compute stats
@@ -61,6 +69,7 @@ export async function POST(request) {
         totalDonationsHtg,
         totalDonationsUsd,
         totalSubscribers: subscribers.length,
+        totalReports: reports.length,
       },
       data: {
         contacts,
@@ -68,6 +77,7 @@ export async function POST(request) {
         memberships,
         donations,
         subscribers,
+        reports,
       },
     });
   } catch (error) {
@@ -78,3 +88,4 @@ export async function POST(request) {
     );
   }
 }
+

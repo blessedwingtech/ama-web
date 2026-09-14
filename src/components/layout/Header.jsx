@@ -27,6 +27,7 @@ export default function Header() {
     { href: '/equipe', label: t('nav.team', 'Notre Équipe') },
     { href: '/ministeres', label: t('nav.ministries', 'Nos Ministères') },
     { href: '/mediatheque', label: t('nav.media', 'Médiathèque') },
+    { href: '/statistiques', label: t('nav.stats', 'Statistiques') },
     { href: '/contact', label: t('nav.contact', 'Contact & Adhésion') },
   ];
 
@@ -94,7 +95,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-2.5 xl:px-3.5 py-1.5 rounded-lg text-xs xl:text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`px-2 xl:px-2.5 2xl:px-3.5 py-1.5 rounded-lg text-xs xl:text-[13px] 2xl:text-sm font-medium whitespace-nowrap transition-all ${
                     active
                       ? 'text-ama-blue-900 bg-blue-50 font-semibold shadow-xs'
                       : 'text-slate-700 hover:text-ama-blue-900 hover:bg-slate-100/70'

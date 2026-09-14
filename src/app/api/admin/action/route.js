@@ -67,6 +67,33 @@ export async function POST(request) {
       } else if (action === 'delete') {
         result = await prisma.donationIntent.delete({ where: { id } });
       }
+    } else if (model === 'report') {
+      if (action === 'togglePublished') {
+        result = await prisma.report.update({
+          where: { id },
+          data: { isPublished: Boolean(data.isPublished) },
+        });
+      } else if (action === 'create') {
+        result = await prisma.report.create({
+          data: {
+            title: data.title,
+            slug: data.slug || `rapport-${Date.now()}`,
+            period: data.period,
+            periodId: data.periodId,
+            year: parseInt(data.year) || new Date().getFullYear(),
+            category: data.category || 'evangelisation',
+            author: data.author || 'Comité Exécutif AMA',
+            summary: data.summary,
+            content: data.content,
+            metrics: data.metrics || [],
+            highlights: data.highlights || [],
+            pdfUrl: data.pdfUrl || null,
+            isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
+          },
+        });
+      } else if (action === 'delete') {
+        result = await prisma.report.delete({ where: { id } });
+      }
     }
 
     return NextResponse.json({

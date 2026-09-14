@@ -116,7 +116,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/mediatheque" className="hover:text-amber-400 transition-colors">
-                  Médiathèque, Audios & Tournois
+                  Médiathèque & Rapports Périodiques
+                </Link>
+              </li>
+              <li>
+                <Link href="/statistiques" className="hover:text-amber-400 transition-colors">
+                  Statistiques & Vision 2050
                 </Link>
               </li>
               <li>

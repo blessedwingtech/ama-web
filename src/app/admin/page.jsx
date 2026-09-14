@@ -20,6 +20,11 @@ import {
   Filter,
   ShieldCheck,
   Calendar,
+  BookOpen,
+  Plus,
+  Eye,
+  EyeOff,
+  FileText,
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -28,7 +33,6 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
-
   const [stats, setStats] = useState(null);
   const [data, setData] = useState({
     contacts: [],
@@ -36,7 +40,24 @@ export default function AdminDashboardPage() {
     memberships: [],
     donations: [],
     subscribers: [],
+    reports: [],
   });
+
+  const [newReport, setNewReport] = useState({
+    title: '',
+    period: '1er Trimestre 2026',
+    periodId: '2026-t1',
+    year: 2026,
+    category: 'evangelisation',
+    author: 'Comité Exécutif AMA',
+    summary: '',
+    content: '',
+    highlights: '',
+    metrics: '',
+    pdfUrl: '',
+  });
+  const [showAddReportModal, setShowAddReportModal] = useState(false);
+
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -138,6 +159,58 @@ export default function AdminDashboardPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const handleCreateReport = async (e) => {
+    e.preventDefault();
+    if (!newReport.title || !newReport.summary || !newReport.content) {
+      alert('Veuillez remplir les champs obligatoires (Titre, Résumé, Contenu).');
+      return;
+    }
+
+    // Parse highlights from newline-separated string if provided
+    const highlightsArr = typeof newReport.highlights === 'string'
+      ? newReport.highlights.split('\n').map((s) => s.trim()).filter(Boolean)
+      : newReport.highlights || [];
+
+    // Parse metrics if provided in format: Label: Value
+    const metricsArr = typeof newReport.metrics === 'string'
+      ? newReport.metrics.split('\n').map((line) => {
+          const parts = line.split(':');
+          return { label: parts[0]?.trim() || '', value: parts[1]?.trim() || '' };
+        }).filter((m) => m.label && m.value)
+      : newReport.metrics || [];
+
+    await handleAction('report', 'create', 'new', {
+      title: newReport.title,
+      period: newReport.period,
+      periodId: newReport.periodId || newReport.period.toLowerCase().replace(/\s+/g, '-'),
+      year: parseInt(newReport.year) || 2026,
+      category: newReport.category,
+      author: newReport.author,
+      summary: newReport.summary,
+      content: newReport.content,
+      highlights: highlightsArr,
+      metrics: metricsArr,
+      pdfUrl: newReport.pdfUrl || null,
+      isPublished: true,
+    });
+
+    setShowAddReportModal(false);
+    setNewReport({
+      title: '',
+      period: '1er Trimestre 2026',
+      periodId: '2026-t1',
+      year: 2026,
+      category: 'evangelisation',
+      author: 'Comité Exécutif AMA',
+      summary: '',
+      content: '',
+      highlights: '',
+      metrics: '',
+      pdfUrl: '',
+    });
+  };
+
 
   // 1. LOGIN SCREEN IF NOT AUTHENTICATED
   if (!isAuthenticated) {
@@ -340,6 +413,16 @@ export default function AdminDashboardPage() {
         >
           <Users className="w-4 h-4 text-ama-blue-700" />
           <span>Adhésions ({data.memberships.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('reports')}
+          className={`flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
+            activeTab === 'reports' ? 'bg-white text-amber-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <BookOpen className="w-4 h-4 text-amber-600" />
+          <span>📑 Rapports Périodiques ({(data.reports || []).length})</span>
         </button>
       </div>
 
@@ -699,6 +782,273 @@ export default function AdminDashboardPage() {
                 </div>
               ))
             )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: RAPPORTS PÉRIODIQUES */}
+      {activeTab === 'reports' && (
+        <div className="bg-white rounded-3xl border border-amber-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-100 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full">
+                  Transparence & Médiathèque
+                </span>
+                <span className="text-xs text-slate-500 font-mono">
+                  {(data.reports || []).length} rapport(s)
+                </span>
+              </div>
+              <h2 className="font-serif font-bold text-xl text-slate-900 mt-1">
+                Gestion & Publication des Rapports Périodiques
+              </h2>
+              <p className="text-xs text-slate-500">
+                Publiez les bilans trimestriels, comptes-rendus de championnats et synthèses financières visibles dans la Médiathèque.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowAddReportModal(true)}
+              className="inline-flex items-center gap-2 bg-ama-blue-900 hover:bg-ama-blue-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-colors"
+            >
+              <Plus className="w-4 h-4 text-amber-400" />
+              <span>Publier un Nouveau Rapport</span>
+            </button>
+          </div>
+
+          {/* Reports Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-700">
+              <thead className="bg-slate-50 text-slate-500 uppercase font-bold text-[11px] border-b border-slate-200">
+                <tr>
+                  <th className="p-3">Période / Année</th>
+                  <th className="p-3">Titre du Rapport</th>
+                  <th className="p-3">Catégorie</th>
+                  <th className="p-3">Auteur</th>
+                  <th className="p-3">Statut</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(!data.reports || data.reports.length === 0) ? (
+                  <tr>
+                    <td colSpan="6" className="p-6 text-center text-slate-400">
+                      Aucun rapport enregistré. Cliquez sur « Publier un Nouveau Rapport ».
+                    </td>
+                  </tr>
+                ) : (
+                  data.reports.map((rep) => (
+                    <tr key={rep.id} className="hover:bg-slate-50">
+                      <td className="p-3 whitespace-nowrap">
+                        <span className="bg-blue-50 text-ama-blue-900 font-bold px-2.5 py-1 rounded-md border border-blue-100 text-[11px]">
+                          {rep.period}
+                        </span>
+                      </td>
+                      <td className="p-3 font-semibold text-slate-900 max-w-xs">
+                        <div>{rep.title}</div>
+                        <div className="text-slate-400 text-[10px] line-clamp-1 mt-0.5">{rep.summary}</div>
+                      </td>
+                      <td className="p-3">
+                        <span className="uppercase text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded">
+                          {rep.category}
+                        </span>
+                      </td>
+                      <td className="p-3 text-slate-600">{rep.author}</td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            rep.isPublished !== false
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-slate-200 text-slate-700'
+                          }`}
+                        >
+                          {rep.isPublished !== false ? '✓ Publié' : 'Brouillon'}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right whitespace-nowrap space-x-1">
+                        <button
+                          onClick={() =>
+                            handleAction('report', 'togglePublished', rep.id, {
+                              isPublished: rep.isPublished === false ? true : false,
+                            })
+                          }
+                          className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg"
+                          title={rep.isPublished !== false ? 'Masquer (Mettre en brouillon)' : 'Publier sur le site'}
+                        >
+                          {rep.isPublished !== false ? (
+                            <EyeOff className="w-3.5 h-3.5" />
+                          ) : (
+                            <Eye className="w-3.5 h-3.5 text-emerald-600" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('Supprimer définitivement ce rapport ?')) {
+                              handleAction('report', 'delete', rep.id);
+                            }
+                          }}
+                          className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL CREATION RAPPORT */}
+      {showAddReportModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white max-w-2xl w-full rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-serif font-bold text-xl text-slate-900">
+                  Publier un Rapport Périodique
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Remplissez les informations institutionnelles pour alimenter la Médiathèque.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAddReportModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateReport} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block font-bold text-slate-700 mb-1">Période Libellé * :</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex: 2ème Trimestre 2026, Bilan Estival 2026"
+                    value={newReport.period}
+                    onChange={(e) => setNewReport({ ...newReport, period: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Année * :</label>
+                  <input
+                    type="number"
+                    required
+                    value={newReport.year}
+                    onChange={(e) => setNewReport({ ...newReport, year: parseInt(e.target.value) || 2026 })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Catégorie / Pilier * :</label>
+                  <select
+                    value={newReport.category}
+                    onChange={(e) => setNewReport({ ...newReport, category: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                  >
+                    <option value="evangelisation">Évangélisation & Croisades</option>
+                    <option value="sport">Sports & Championnats d'Été</option>
+                    <option value="social">Diaconat & Action Sociale</option>
+                    <option value="theologie">Formation Théologique & Génie</option>
+                    <option value="finances">Trésorerie & Transparence</option>
+                    <option value="annuel">Bilan Annuel Consolidé</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Auteur / Rédacteur * :</label>
+                  <input
+                    type="text"
+                    required
+                    value={newReport.author}
+                    onChange={(e) => setNewReport({ ...newReport, author: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Titre Complet du Rapport * :</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Rapport d'Activité T2 2026 : Extension vers les Hameaux de Thomonde"
+                  value={newReport.title}
+                  onChange={(e) => setNewReport({ ...newReport, title: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Résumé Exécutif (1 à 2 phrases) * :</label>
+                <textarea
+                  rows={2}
+                  required
+                  placeholder="Synthèse claire pour la carte d'aperçu..."
+                  value={newReport.summary}
+                  onChange={(e) => setNewReport({ ...newReport, summary: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Indicateurs Chiffrés (Un par ligne sous format "Label: Valeur") :</label>
+                <textarea
+                  rows={3}
+                  placeholder={"Âmes touchées: 4 200\nDécisions: 130\nÉglises associées: 26\nBibles données: 210"}
+                  value={newReport.metrics}
+                  onChange={(e) => setNewReport({ ...newReport, metrics: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Points Forts / Faits Marquants (Un par ligne) :</label>
+                <textarea
+                  rows={3}
+                  placeholder={"Grande traversée missionnaire sur le lac de Péligre.\nRemise de bourses d'encouragement aux lauréats du génie biblique.\nDistribution de 100 kits alimentaires aux familles isolées."}
+                  value={newReport.highlights}
+                  onChange={(e) => setNewReport({ ...newReport, highlights: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Compte Rendu Intégral & Récit Détaillé * :</label>
+                <textarea
+                  rows={5}
+                  required
+                  placeholder="Texte complet du rapport qui apparaîtra dans le lecteur modal et la fiche imprimable..."
+                  value={newReport.content}
+                  onChange={(e) => setNewReport({ ...newReport, content: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddReportModal(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-ama-blue-900 hover:bg-ama-blue-800 text-white font-bold shadow-md transition-colors"
+                >
+                  Enregistrer & Publier
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
