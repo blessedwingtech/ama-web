@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. Base de Données PostgreSQL Dédiée & Isolée
   db:
@@ -37,7 +35,6 @@ services:
       ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY:-AMA2025*Admin}
       PORT: 3000
     ports:
-      # Expose le port 3050 sur le VPS (redirigé par Nginx vers le port 3000 du conteneur)
       - "127.0.0.1:3050:3000"
     networks:
       - ama_network
