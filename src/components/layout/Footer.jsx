@@ -37,7 +37,7 @@ export default function Footer() {
               « Allez, faites de toutes les nations des disciples, les baptisant au nom du Père, du Fils et du Saint-Esprit. » — Matthieu 28:19
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div hidden className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/faire-un-don"
               className="flex items-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 hover:from-ama-gold-700 hover:to-amber-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all"
@@ -124,7 +124,7 @@ export default function Footer() {
                   Statistiques & Vision 2050
                 </Link>
               </li>
-              <li>
+              <li hidden>
                 <Link href="/faire-un-don" className="hover:text-amber-400 transition-colors">
                   Faire un Don (MonCash / Natcash)
                 </Link>

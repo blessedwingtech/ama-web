@@ -57,7 +57,7 @@ export default function HomePage() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-                <Link
+                <Link hidden
                   href="/faire-un-don"
                   className="flex items-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 hover:from-ama-gold-700 hover:to-amber-700 text-white px-7 py-3.5 rounded-xl font-bold text-sm sm:text-base shadow-xl hover:shadow-2xl active:scale-95 transition-all"
                 >
@@ -354,7 +354,7 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-              <Link
+              <Link hidden
                 href="/faire-un-don"
                 className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 hover:from-ama-gold-700 hover:to-amber-700 text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-lg transition-all"
               >

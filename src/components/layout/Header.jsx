@@ -108,9 +108,9 @@ export default function Header() {
           </nav>
 
           {/* Right Action Area */}
-          <div className="hidden lg:flex items-center gap-2 xl:gap-3">
+          <div hidden className="hidden lg:flex items-center gap-2 xl:gap-3">
             {/* Language Switcher */}
-            <div hidden className="relative">
+            <div className="relative">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -157,7 +157,7 @@ export default function Header() {
           </div>
 
           {/* Mobile Menu & Language Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div hidden className="flex items-center gap-2 lg:hidden">
             {/* Quick Lang toggle for mobile */}
             <button
               onClick={() => {
@@ -214,7 +214,7 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-3">
+          <div hidden className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-3">
             <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider px-1">
               Changer de Langue
             </div>
