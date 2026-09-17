@@ -44,7 +44,7 @@ export default function DonatePage() {
   ];
 
   return (
-    <div className="py-12 sm:py-16 space-y-16 sm:space-y-20">
+    <div hidden className="py-12 sm:py-16 space-y-16 sm:space-y-20">
       {/* Header */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider mb-4">
