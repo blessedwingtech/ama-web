@@ -1909,7 +1909,7 @@ export default function AdminDashboardPage() {
             <ol className="space-y-2 text-xs sm:text-sm text-slate-600 list-decimal list-inside leading-relaxed">
               <li>Le donateur effectue son transfert via MonCash (*202#), Natcash ou PayPal.</li>
               <li>Il remplit le formulaire de déclaration sur le site et clique sur « Confirmer WhatsApp ».</li>
-              <li>Le Trésorier Général vérifie le SMS de confirmation sur le téléphone officiel (+509 3252-9060).</li>
+              <li>Le Trésorier Général vérifie le SMS de confirmation sur les téléphones officiels (MonCash : +509 3651-2047 / Natcash : +509 3252-9060).</li>
               <li>Dans ce tableau de bord, cliquez sur « Confirmer » pour valider la réception et consolider les totaux.</li>
             </ol>
           </div>

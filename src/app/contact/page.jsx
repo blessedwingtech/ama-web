@@ -52,14 +52,14 @@ export default function ContactPage() {
               <p className="text-xs text-slate-500 mb-2">Appels & WhatsApp direct</p>
               <div className="space-y-1 font-mono text-xs sm:text-sm font-semibold text-ama-blue-900">
                 <div>
-                  <a href="tel:+50932529060" className="hover:underline">
-                    +509 3252-9060
+                  <a href="tel:+50936512047" className="hover:underline">
+                    +509 3651-2047
                   </a>{' '}
                   <span className="text-[10px] text-red-600 font-sans">(MonCash)</span>
                 </div>
                 <div>
-                  <a href="tel:+50936512047" className="hover:underline">
-                    +509 3651-2047
+                  <a href="tel:+50932529060" className="hover:underline">
+                    +509 3252-9060
                   </a>{' '}
                   <span className="text-[10px] text-emerald-600 font-sans">(Natcash)</span>
                 </div>

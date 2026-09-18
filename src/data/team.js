@@ -1,23 +1,23 @@
 export const executiveCommittee = [
   {
-    id: "toutoute-julberson",
-    name: "TOUTOUTE Julberson",
+    id: "pasteur-yvon-bathol",
+    name: "Pasteur Yvon BATHOL",
     role: "Président",
     title: "Président du Comité Exécutif",
+    affiliation: "Pasteur de l'Église Évangélique Galilée de Delbourg (Thomonde)",
+    image: "/images/team/yvon-bathol.webp",
+    fallbackInitial: "YB",
+    bio: "Président du Comité Exécutif. Pasteur principal de l'Église Évangélique Galilée de Delbourg à Thomonde, théologien et éducateur respecté dans le Plateau Central. Le Pasteur Yvon Bathol assure la présidence générale, l'orientation doctrinale et la supervision spirituelle de la Vision 2050 pour atteindre plus de 100 000 âmes pour Jésus-Christ.",
+  },
+  {
+    id: "toutoute-julberson",
+    name: "TOUTOUTE Julberson",
+    role: "Vice-Président",
+    title: "Vice-Président du Comité Exécutif",
     affiliation: "Église Évangélique Galilée de Delbourg",
     image: "/images/team/julberson-toutoute.webp",
     fallbackInitial: "JT",
-    bio: "Président du Comité Exécutif. Leader engagé au sein de l'Église Évangélique Galilée de Delbourg, M. Toutoute a exercé de nombreuses responsabilités ecclésiales, notamment comme aspirant leader, délégué du département des hommes et moniteur à l'École du Dimanche. Il coordonne la vision générale et le déploiement des activités d'évangélisation d'AMA.",
-  },
-  {
-    id: "voyelle-gilbert",
-    name: "VOYELLE Gilbert",
-    role: "Vice-Président",
-    title: "Vice-Président du Comité Exécutif",
-    affiliation: "Centre de Formation Biblique (CFB) & AJPM Mirebalais",
-    image: "/images/team/gilbert-voyelle.webp",
-    fallbackInitial: "GV",
-    bio: "Vice-Président du Comité Exécutif. Formé au Centre de Formation Biblique (CFB), Gilbert Voyelle possède une solide expérience dans la mobilisation communautaire chrétienne. Ancien président de l'association « Pêcheurs d'hommes » et de l'AJPM de Mirebalais, il œuvre activement dans la mission d'évangélisation et l'encadrement des groupes de jeunes.",
+    bio: "Vice-Président du Comité Exécutif. Leader engagé au sein de l'Église Évangélique Galilée de Delbourg, M. Toutoute a exercé de nombreuses responsabilités ecclésiales, notamment comme aspirant leader, délégué du département des hommes et moniteur à l'École du Dimanche. Il épaule la présidence dans la coordination générale et le déploiement des activités d'évangélisation d'AMA.",
   },
   {
     id: "blanc-jean-paul",
@@ -28,6 +28,16 @@ export const executiveCommittee = [
     image: "/images/team/jean-paul-blanc.webp",
     fallbackInitial: "JB",
     bio: "Secrétaire Général de l'Association. Licencié en Sciences de la Gestion (Université Caraïbe) et certifié en Gestion de Projets (CREFIMA), Jean-Paul Blanc cumule plus de quinze années d'expérience en gestion administrative de programmes. Chrétien engagé et conseiller au comité de l'Église Évangélique Galilée de Delbourg, il assure l'administration générale et la coordination légale de l'association.",
+  },
+  {
+    id: "voyelle-gilbert",
+    name: "VOYELLE Gilbert",
+    role: "Secrétariat Adjoint",
+    title: "Secrétaire Adjoint du Comité Exécutif",
+    affiliation: "Centre de Formation Biblique (CFB) & AJPM Mirebalais",
+    image: "/images/team/gilbert-voyelle.webp",
+    fallbackInitial: "GV",
+    bio: "Secrétaire Adjoint du Comité Exécutif. Formé au Centre de Formation Biblique (CFB), Gilbert Voyelle possède une solide expérience dans la mobilisation communautaire chrétienne. Ancien président de l'association « Pêcheurs d'hommes » et de l'AJPM de Mirebalais, il appuie le secrétariat général dans l'administration, la mission d'évangélisation et l'encadrement des groupes de jeunes.",
   },
   {
     id: "fontil-jean-rony",
@@ -52,12 +62,12 @@ export const executiveCommittee = [
   {
     id: "mystere-humene",
     name: "MYSTÈRE Humène",
-    role: "Secrétariat Adjoint",
-    title: "Secrétaire Adjointe",
+    role: "Affaires Sociales & Communauté",
+    title: "Conseillère & Affaires Sociales",
     affiliation: "École Normale (CEPAM / ENIL) & Région de Thomonde",
     image: "/images/team/humene-mystere.webp",
     fallbackInitial: "HM",
-    bio: "Secrétaire Adjointe. Enseignante dévouée depuis 2010, formée à l'École Normale (CEPAM / ENIL) avec un parcours universitaire en sciences juridiques. Elle coordonne les programmes de lecture pour la jeunesse et contribue activement aux œuvres caritatives communautaires de la région de Thomonde.",
+    bio: "Conseillère & Affaires Sociales. Enseignante dévouée depuis 2010, formée à l'École Normale (CEPAM / ENIL) avec un parcours universitaire en sciences juridiques. Elle coordonne les programmes d'alphabétisation, de lecture pour la jeunesse et contribue activement aux œuvres caritatives communautaires de la région de Thomonde.",
   },
 ];
 
@@ -70,9 +80,9 @@ export const pastoralCollege = {
     {
       id: "pasteur-yvon-bathol",
       name: "Pasteur Yvon BATHOL",
-      title: "Conseiller Spirituel & Théologien",
+      title: "Président d'AMA & Pasteur Principal",
       church: "Église Évangélique Galilée de Delbourg (Thomonde)",
-      roleDescription: "Théologien, éducateur et pasteur principal de l'assemblée hôte de Delbourg. Il veille à l'ancrage biblique et à l'orientation pastorale de la mission.",
+      roleDescription: "Pasteur principal de l'assemblée hôte de Delbourg, théologien et président du comité exécutif d'AMA. Il veille à l'ancrage biblique, à l'orientation pastorale et au réveil missionnaire dans le Plateau Central.",
     },
     {
       id: "pasteur-elisson-joseph",

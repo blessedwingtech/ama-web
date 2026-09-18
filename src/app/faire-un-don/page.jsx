@@ -16,7 +16,7 @@ import {
 export const metadata = {
   title: 'Nous Soutenir & Faire un Don',
   description:
-    'Soutenez l’Association 100,000 Âmes (AMA) à Thomonde via MonCash (3252-9060), Natcash (3651-2047), PayPal, cartes bancaires ou parrainage de bibles.',
+    'Soutenez l’Association 100,000 Âmes (AMA) à Thomonde via MonCash (3651-2047), Natcash (3252-9060), PayPal, cartes bancaires ou parrainage de bibles.',
 };
 
 export default function DonatePage() {

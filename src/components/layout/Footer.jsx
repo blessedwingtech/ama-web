@@ -165,11 +165,11 @@ export default function Footer() {
               </li>
             </ul>
 
-            <div className="pt-2">
+            <div hidden className="pt-2">
               <div className="p-3 rounded-lg bg-slate-800/80 border border-slate-700 text-xs">
                 <p className="font-semibold text-slate-200 mb-1">Dons Mobiles Locaux :</p>
-                <p className="text-amber-400 font-mono">MonCash : 3252-9060</p>
-                <p className="text-emerald-400 font-mono">Natcash : 3651-2047</p>
+                <p className="text-amber-400 font-mono">MonCash : 3651-2047</p>
+                <p className="text-emerald-400 font-mono">Natcash : 3252-9060</p>
               </div>
             </div>
           </div>
@@ -190,11 +190,11 @@ export default function Footer() {
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
                 <div className="flex flex-col font-mono text-slate-200">
-                  <a href="tel:+50932529060" className="hover:text-amber-400 transition-colors">
-                    +509 3252-9060
-                  </a>
                   <a href="tel:+50936512047" className="hover:text-amber-400 transition-colors">
                     +509 3651-2047
+                  </a>
+                  <a href="tel:+50932529060" className="hover:text-amber-400 transition-colors">
+                    +509 3252-9060
                   </a>
                 </div>
               </div>
@@ -247,10 +247,21 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Domains */}
-        <div className="mt-12 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        {/* Bottom Bar: Copyright, Credits & Admin */}
+        <div className="mt-12 pt-6 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© {currentYear} Association 100,000 Âmes (AMA). Tous droits réservés.</p>
-          <div className="flex items-center gap-4">
+          
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <a
+              href="https://bwt.bittonik.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-1 font-medium"
+            >
+              <span>Développé par <strong className="text-amber-400 underline decoration-amber-400/50">BWT</strong> (Blessed Wing Tech)</span>
+              <ExternalLink className="w-3 h-3 text-amber-400/80" />
+            </a>
+            <span>•</span>
             <span className="font-mono text-slate-400">{siteConfig.domains.primary}</span>
             <span>•</span>
             <Link href="/admin" className="text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-1">

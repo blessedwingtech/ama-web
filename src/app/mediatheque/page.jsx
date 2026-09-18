@@ -87,6 +87,58 @@ export default function MediaPage() {
     fetchDynamicContent();
   }, []);
 
+  // Dynamic Periods list computed from loaded reports
+  const dynamicReportPeriods = React.useMemo(() => {
+    const list = [{ id: 'all', label: 'Toutes les périodes' }];
+    const seen = new Set(['all']);
+    reportsList.forEach((r) => {
+      const pId = r.periodId || r.period;
+      if (pId && !seen.has(pId)) {
+        seen.add(pId);
+        const known = reportPeriods.find((p) => p.id === pId);
+        list.push({
+          id: pId,
+          label: known ? known.label : r.period,
+        });
+      }
+    });
+    return list;
+  }, [reportsList]);
+
+  // Dynamic Categories list computed from loaded reports
+  const dynamicReportCategories = React.useMemo(() => {
+    const list = [{ id: 'all', label: 'Toutes les catégories' }];
+    const seen = new Set(['all']);
+    reportsList.forEach((r) => {
+      if (r.category && !seen.has(r.category)) {
+        seen.add(r.category);
+        const known = reportCategories.find((c) => c.id === r.category);
+        list.push({
+          id: r.category,
+          label: known ? known.label : r.category.charAt(0).toUpperCase() + r.category.slice(1),
+        });
+      }
+    });
+    return list;
+  }, [reportsList]);
+
+  // Dynamic Photo Categories computed from loaded photos
+  const dynamicPhotoCategories = React.useMemo(() => {
+    const list = [{ id: 'all', label: 'Tous les médias' }];
+    const seen = new Set(['all']);
+    photosList.forEach((p) => {
+      if (p.category && !seen.has(p.category)) {
+        seen.add(p.category);
+        const known = mediaCategories.find((c) => c.id === p.category);
+        list.push({
+          id: p.category,
+          label: known ? known.label : p.category.charAt(0).toUpperCase() + p.category.slice(1),
+        });
+      }
+    });
+    return list;
+  }, [photosList]);
+
   // Filter photos
   const filteredPhotos =
     activePhotoCategory === 'all'
@@ -95,8 +147,9 @@ export default function MediaPage() {
 
   // Filter dynamic reports by period & category
   const filteredReports = reportsList.filter((report) => {
+    const rPeriod = report.periodId || report.period;
     const matchesPeriod =
-      selectedReportPeriod === 'all' || report.periodId === selectedReportPeriod;
+      selectedReportPeriod === 'all' || rPeriod === selectedReportPeriod;
     const matchesCategory =
       selectedReportCategory === 'all' || report.category === selectedReportCategory;
     return matchesPeriod && matchesCategory;
@@ -171,7 +224,7 @@ export default function MediaPage() {
                 <span>Filtrer par Période / Année :</span>
               </label>
               <div className="flex flex-wrap items-center gap-1.5">
-                {reportPeriods.map((period) => (
+                {dynamicReportPeriods.map((period) => (
                   <button
                     key={period.id}
                     onClick={() => setSelectedReportPeriod(period.id)}
@@ -194,7 +247,7 @@ export default function MediaPage() {
                 <span>Filtrer par Pilier / Catégorie :</span>
               </label>
               <div className="flex flex-wrap items-center gap-1.5">
-                {reportCategories.map((cat) => (
+                {dynamicReportCategories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedReportCategory(cat.id)}
@@ -406,22 +459,19 @@ export default function MediaPage() {
 
           {/* Filter Pills */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {mediaCategories.map((cat) => {
-              const active = activePhotoCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActivePhotoCategory(cat.id)}
-                  className={`text-xs px-3.5 py-1.5 rounded-xl font-medium transition-all ${
-                    active
-                      ? 'bg-ama-blue-900 text-white shadow-xs font-bold'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
+            {dynamicPhotoCategories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActivePhotoCategory(cat.id)}
+                className={`text-xs px-3.5 py-1.5 rounded-xl font-medium transition-all ${
+                  activePhotoCategory === cat.id
+                    ? 'bg-ama-blue-900 text-white shadow-xs font-bold'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
 

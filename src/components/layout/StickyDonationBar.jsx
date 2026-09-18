@@ -43,10 +43,10 @@ export default function StickyDonationBar() {
           >
             {copiedType === 'moncash' ? (
               <span className="flex items-center gap-1 text-emerald-700">
-                <Check className="w-3.5 h-3.5" /> 3252-9060 Copié !
+                <Check className="w-3.5 h-3.5" /> 3651-2047 Copié !
               </span>
             ) : (
-              <span>MonCash : <strong>3252-9060</strong></span>
+              <span>MonCash : <strong>3651-2047</strong></span>
             )}
           </button>
 
@@ -58,10 +58,10 @@ export default function StickyDonationBar() {
           >
             {copiedType === 'natcash' ? (
               <span className="flex items-center gap-1 text-emerald-700">
-                <Check className="w-3.5 h-3.5" /> 3651-2047 Copié !
+                <Check className="w-3.5 h-3.5" /> 3252-9060 Copié !
               </span>
             ) : (
-              <span>Natcash : <strong>3651-2047</strong></span>
+              <span>Natcash : <strong>3252-9060</strong></span>
             )}
           </button>
 

@@ -50,8 +50,8 @@ export default function DonationForm() {
   };
 
   const channelLabels = {
-    MONCASH: 'MonCash (3252-9060)',
-    NATCASH: 'Natcash (3651-2047)',
+    MONCASH: 'MonCash (3651-2047)',
+    NATCASH: 'Natcash (3252-9060)',
     PAYPAL: 'PayPal / Carte Bancaire Diaspora',
     BANK_TRANSFER: 'Virement Bancaire',
     IN_PERSON: 'Espèces au Siège (Delbourg)',
@@ -300,8 +300,8 @@ Merci de confirmer la bonne réception ! Que Dieu bénisse l'œuvre !`;
             onChange={(e) => setFormData({ ...formData, channel: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-ama-blue-900 focus:outline-hidden bg-slate-50 text-slate-800 text-sm"
           >
-            <option value="MONCASH">MonCash (Digicel : 3252-9060)</option>
-            <option value="NATCASH">Natcash (Natcom : 3651-2047)</option>
+            <option value="MONCASH">MonCash (Digicel : 3651-2047)</option>
+            <option value="NATCASH">Natcash (Natcom : 3252-9060)</option>
             <option value="PAYPAL">PayPal / Carte Bancaire Diaspora</option>
             <option value="BANK_TRANSFER">Virement Bancaire (UNIBANK / SOGEBANK / BNC)</option>
             <option value="IN_PERSON">Don en espèces au Siège (Delbourg)</option>
