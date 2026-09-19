@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import { siteConfig } from '@/data/siteConfig';
 import { ministries } from '@/data/ministries';
+import { initialAnnouncements } from '@/data/announcements';
 import MinistryCard from '@/components/cards/MinistryCard';
 import {
   Heart,
@@ -20,23 +21,73 @@ import {
   ShieldCheck,
   ChevronRight,
   Radio,
+  Megaphone,
+  Bell,
+  Clock,
+  Award,
 } from 'lucide-react';
 
 export default function HomePage() {
   const { t } = useLanguage();
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState(initialAnnouncements);
+  const [liveStats, setLiveStats] = useState(null);
+
+  useEffect(() => {
+    // Fetch dynamic announcements
+    fetch('/api/announcements')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.announcements && data.announcements.length > 0) {
+          setAnnouncements(data.announcements);
+        }
+      })
+      .catch(() => {});
+
+    // Fetch dynamic stats
+    fetch('/api/statistics')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data && data.data.globalStats) {
+          setLiveStats(data.data.globalStats);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const urgentAnnouncement = announcements.find((a) => a.isUrgent);
 
   return (
-    <div className="space-y-16 sm:space-y-24">
+    <div className="space-y-14 sm:space-y-20">
+      {/* 0. URGENT ANNOUNCEMENT TOP BANNER (IF ANY) */}
+      {urgentAnnouncement && (
+        <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white px-4 py-3 shadow-md">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
+            <div className="flex items-center gap-2">
+              <span className="bg-white text-amber-900 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider shrink-0">
+                Officiel
+              </span>
+              <span className="font-semibold">{urgentAnnouncement.title}</span>
+            </div>
+            <Link
+              href="/mediatheque"
+              className="inline-flex items-center gap-1 font-bold underline hover:text-amber-200 text-xs shrink-0"
+            >
+              <span>Consulter le communiqué</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-ama-blue-950 via-ama-blue-900 to-slate-900 text-white py-16 sm:py-24 lg:py-32">
-        {/* Background glow & subtle patterns */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-ama-blue-950 via-ama-blue-900 to-slate-900 text-white py-14 sm:py-20 lg:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-amber-500/15 via-transparent to-transparent pointer-events-none"></div>
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Hero Text */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-xs">
@@ -48,10 +99,10 @@ export default function HomePage() {
                 {t('hero.title', 'Plus de 100 000 Âmes Gagnées, Restaurées et Formées pour Christ')}
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
                 {t(
                   'hero.subtitle',
-                  "Organisation chrétienne protestante engagée autour du Lac de Péligre, à Thomonde et dans tout le Plateau Central haïtien pour un réveil spirituel et un impact social concret."
+                  "Organisation chrétienne protestante unissant les assemblées évangéliques de Thomonde, Delbourg, Plaine du Pré, Vieux-Cayes, Feuillet et Sylguerre pour un réveil spirituel et un impact social concret."
                 )}
               </p>
 
@@ -72,10 +123,18 @@ export default function HomePage() {
                   <span>{t('hero.ctaDiscover', 'Découvrir la Mission')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
+
+                <Link
+                  href="/mediatheque"
+                  className="flex items-center gap-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 px-6 py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all"
+                >
+                  <Award className="w-4 h-4" />
+                  <span>Palmarès & Concours 2025</span>
+                </Link>
               </div>
 
               {/* Location Badge */}
-              <div className="pt-4 flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-400">
+              <div className="pt-2 flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-400">
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>#1, Église Évangélique Galilée de Delbourg, Thomonde (Centre, Haïti)</span>
               </div>
@@ -94,11 +153,11 @@ export default function HomePage() {
                         <h3 className="font-serif font-bold text-white text-base">
                           Association 100,000 Âmes
                         </h3>
-                        <p className="text-xs text-amber-400">Plateau Central • Lac de Péligre</p>
+                        <p className="text-xs text-amber-400">Plateau Central • Siège Delbourg</p>
                       </div>
                     </div>
                     <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-mono px-2.5 py-1 rounded-full border border-emerald-500/30">
-                      Fondée en 2025
+                      Fondée le 7 Août 2025
                     </span>
                   </div>
 
@@ -112,15 +171,15 @@ export default function HomePage() {
                   <div className="space-y-2 text-xs text-slate-300 pt-1">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Coalition d’églises autour du Lac de Péligre</span>
+                      <span>Coalition d’églises du Plateau Central</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Évangélisation sur les marchés & visites aux malades</span>
+                      <span>Compétitions de Versets & Génie Biblique</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>4 Championnats d’été de Football pour la jeunesse</span>
+                      <span>4 Grands Concours Officiels réalisés en 2025</span>
                     </div>
                   </div>
 
@@ -140,53 +199,132 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. COMPTEUR D'IMPACT (ANIMÉ & VISUEL) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-16 relative z-20">
+      {/* 2. COMPTEUR D'IMPACT (DONNÉES RÉELLES SYNCHRONISÉES) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-14 relative z-20">
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200/80">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <span className="text-xs font-bold uppercase tracking-wider text-ama-gold-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-              Chiffres Clés & Objectifs
+              Chiffres Réels & Trajectoire 2050
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 mt-2">
-              Un Impact Spirituel et Communautaire Mesurable
+              Un Impact Spirituel et Scripturaire Concret
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
-            {siteConfig.impactStats.map((stat) => (
-              <div
-                key={stat.id}
-                className="text-center p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-amber-300 hover:bg-amber-50/30 transition-all flex flex-col justify-center items-center"
-              >
-                <div className="text-2xl sm:text-4xl font-serif font-extrabold text-ama-blue-900 tracking-tight flex items-baseline justify-center">
-                  <span>{stat.value}</span>
-                  <span className="text-amber-500 ml-0.5">{stat.suffix}</span>
-                </div>
-                <p className="text-xs sm:text-sm font-medium text-slate-600 mt-1 leading-snug">
-                  {stat.label}
-                </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+            <div className="text-center p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-amber-300 hover:bg-amber-50/30 transition-all flex flex-col justify-center items-center">
+              <div className="text-2xl sm:text-3xl font-serif font-extrabold text-ama-blue-900">
+                100 000
               </div>
-            ))}
+              <p className="text-xs font-medium text-slate-600 mt-1">Objectif Vision 2050</p>
+            </div>
+
+            <div className="text-center p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-amber-300 hover:bg-amber-50/30 transition-all flex flex-col justify-center items-center">
+              <div className="text-2xl sm:text-3xl font-serif font-extrabold text-amber-600">
+                {liveStats ? liveStats.competitionsOrganized || 4 : 4}
+              </div>
+              <p className="text-xs font-medium text-slate-600 mt-1">Grands Concours (2025)</p>
+            </div>
+
+            <div className="text-center p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-amber-300 hover:bg-amber-50/30 transition-all flex flex-col justify-center items-center">
+              <div className="text-2xl sm:text-3xl font-serif font-extrabold text-emerald-700">
+                {liveStats ? liveStats.laureatesAwarded || 14 : 14}
+              </div>
+              <p className="text-xs font-medium text-slate-600 mt-1">Lauréats Récompensés</p>
+            </div>
+
+            <div className="text-center p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-amber-300 hover:bg-amber-50/30 transition-all flex flex-col justify-center items-center">
+              <div className="text-2xl sm:text-3xl font-serif font-extrabold text-blue-900">
+                {liveStats ? liveStats.partnerChurches || 5 : 5}
+              </div>
+              <p className="text-xs font-medium text-slate-600 mt-1">Églises Partenaires</p>
+            </div>
+
+            <div className="text-center p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-amber-300 hover:bg-amber-50/30 transition-all flex flex-col justify-center items-center col-span-2 sm:col-span-1">
+              <div className="text-2xl sm:text-3xl font-serif font-extrabold text-purple-900">
+                230
+              </div>
+              <p className="text-xs font-medium text-slate-600 mt-1">Record Versets Mémorisés</p>
+            </div>
           </div>
 
           <div className="mt-6 text-center text-xs text-slate-400 italic">
-            * Statistiques prévisionnelles et jalons d'activité en cours de consolidation pour la Vision 2050.
+            * Données certifiées issues des procès-verbaux de jury et des assemblées générales d'AMA.
           </div>
         </div>
       </section>
 
-      {/* 3. MOT DU PRÉSIDENT (JULBERSON TOUTOUTE) */}
+      {/* 3. SECTION PUBLICATIONS & ANNONCES OFFICIELLES (DYNAMIQUE) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+              Actualités & Communiqués
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 mt-2">
+              Annonces & Publications Officielles
+            </h2>
+          </div>
+
+          <Link
+            href="/mediatheque"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-800 hover:text-blue-900"
+          >
+            <span>Voir toute la médiathèque</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {announcements.slice(0, 2).map((ann) => (
+            <div
+              key={ann.id}
+              className={`p-6 sm:p-7 rounded-3xl border transition-all space-y-4 ${
+                ann.isUrgent
+                  ? 'bg-amber-50/60 border-amber-300 shadow-sm'
+                  : 'bg-white border-slate-200 shadow-sm hover:border-blue-300'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-100 text-blue-900">
+                  {ann.category}
+                </span>
+                {ann.eventDate && (
+                  <span className="text-xs text-slate-400 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>{ann.eventDate}</span>
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-serif font-bold text-lg text-slate-900">{ann.title}</h3>
+                <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">{ann.summary}</p>
+              </div>
+
+              {ann.location && (
+                <div className="flex items-center gap-1.5 text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span>{ann.location}</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. MOT DU PRÉSIDENT (PASTEUR YVON BATHOL) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-br from-slate-900 to-ama-blue-950 rounded-3xl text-white p-8 sm:p-12 lg:p-16 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* President Photo / Placeholder */}
+            {/* President Avatar */}
             <div className="lg:col-span-4 flex flex-col items-center text-center">
               <div className="relative">
                 <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-3xl bg-gradient-to-br from-amber-400 to-amber-600 p-1 shadow-2xl">
                   <div className="w-full h-full rounded-[22px] bg-slate-800 flex items-center justify-center font-serif text-4xl sm:text-5xl font-bold text-amber-300 border border-white/20">
-                    JT
+                    YB
                   </div>
                 </div>
                 <div className="absolute -bottom-3 bg-ama-blue-900 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/50 shadow-md">
@@ -196,13 +334,13 @@ export default function HomePage() {
 
               <div className="mt-6">
                 <h3 className="font-serif font-bold text-xl text-white">
-                  TOUTOUTE Julberson
+                  Pasteur Yvon BATHOL
                 </h3>
                 <p className="text-xs text-amber-400 font-medium mt-0.5">
                   Président du Comité Exécutif
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
-                  Église Évangélique Galilée de Delbourg
+                  Pasteur de l'Église Évangélique Galilée de Delbourg
                 </p>
               </div>
             </div>
@@ -219,7 +357,7 @@ export default function HomePage() {
               </blockquote>
 
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Leader engagé au sein de l'Église Évangélique Galilée de Delbourg, M. Toutoute coordonne la vision générale et le déploiement des activités d'évangélisation d'AMA. Entouré d'une équipe administrative compétente et sous le conseil pastoral des serviteurs de Dieu de la région, l'Association œuvre sans relâche pour la propagation du salut en Jésus-Christ.
+                Le Pasteur Yvon Bathol veille à l'ancrage scripturaire, à la pureté de la doctrine et au déploiement des compétitions de mémorisation de la Parole de Dieu. Épaulé par Julberson TOUTOUTE (Vice-Président), Jean-Paul BLANC (Secrétaire Général), Gilbert VOYELLE (Secrétaire Adjoint) et l'ensemble du corps pastoral régional, l'Association œuvre sans relâche pour la propagation du salut en Jésus-Christ.
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-4">
@@ -236,7 +374,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. APERÇU DES 4 PILIERS D'INTERVENTION */}
+      {/* 5. APERÇU DES PILIERS D'INTERVENTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <div>
@@ -244,12 +382,12 @@ export default function HomePage() {
               Nos Ministères
             </span>
             <h2 className="text-2xl sm:text-4xl font-serif font-bold text-slate-900 mt-2">
-              {t('pillars.title', 'Nos 4 Piliers d’Intervention')}
+              {t('pillars.title', 'Nos Piliers d’Intervention')}
             </h2>
             <p className="text-slate-600 text-sm sm:text-base mt-1 max-w-2xl">
               {t(
                 'pillars.subtitle',
-                'Une action holistique alliant proclamation de la foi, édification fraternelle et solidarité chrétienne.'
+                'Une action équilibrée unissant proclamation de l’Évangile, génie biblique, encadrement de la jeunesse et diaconat.'
               )}
             </p>
           </div>
@@ -268,88 +406,21 @@ export default function HomePage() {
             <MinistryCard key={min.id} ministry={min} />
           ))}
         </div>
-
-        {/* Highlight Banner for Sports Evangelism (Pillar 4) */}
-        <div className="mt-8 bg-gradient-to-r from-amber-500/10 via-amber-100/50 to-blue-50 rounded-3xl p-6 sm:p-8 border border-amber-200/80 flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-200/70 px-2.5 py-0.5 rounded-full">
-              Piler Phare • Jeunesse
-            </span>
-            <h3 className="font-serif font-bold text-xl sm:text-2xl text-slate-900">
-              Évangélisation par le Sport & 4 Championnats d’Été à Thomonde
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-700 max-w-3xl leading-relaxed">
-              Plus de 5 000 spectateurs et jeunes réunis chaque été : Tournoi Inter-Églises, Tournoi Féminin, Tournoi Inter-Zones et Tournoi Juniors. L'Évangile au cœur du sport.
-            </p>
-          </div>
-
-          <Link
-            href="/ministeres#sport-championships"
-            className="shrink-0 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-colors"
-          >
-            Explorer les tournois
-          </Link>
-        </div>
       </section>
 
-      {/* 5. TEMPS FORTS EN VIDÉO */}
-      <section className="bg-slate-100/80 py-16 sm:py-20 border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-ama-blue-900 bg-blue-100/80 px-3 py-1 rounded-full">
-              Médiathèque Vidéo
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 mt-2">
-              Temps Forts de nos Campagnes & Rassemblements
-            </h2>
-            <p className="text-slate-600 text-xs sm:text-sm mt-1">
-              Revivez l’atmosphère spirituelle et communautaire de nos missions dans le Plateau Central.
-            </p>
-          </div>
-
-          <div className="relative max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video border-4 border-white">
-            {/* Poster / Video simulation */}
-            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-t from-black/80 via-slate-900/60 to-black/80">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80"
-                alt="Temps forts vidéo AMA"
-                className="absolute inset-0 w-full h-full object-cover opacity-40"
-              />
-
-              <div className="relative z-10 text-center p-6 space-y-4">
-                <button
-                  onClick={() => setVideoModalOpen(true)}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 mx-auto"
-                  aria-label="Lire la vidéo"
-                >
-                  <Play className="w-8 h-8 fill-slate-950 ml-1" />
-                </button>
-                <h3 className="font-serif font-bold text-white text-lg sm:text-2xl">
-                  Rétrospective des Missions & Tournois d'Été à Thomonde
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto">
-                  Témoignages, proclamation sur les marchés et communion fraternelle autour du Lac de Péligre.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. BANDEAU ACCÈS RAPIDE AUX DONS */}
+      {/* 6. BANDEAU DE CONTACT & ENGAGEMENT */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-ama-blue-900 via-blue-900 to-ama-blue-950 rounded-3xl text-white p-8 sm:p-12 shadow-xl border border-blue-800">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="space-y-3 text-center lg:text-left">
               <span className="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-400/20 px-3 py-1 rounded-full">
-                Soutien & Offrandes
+                Rejoignez la Mission
               </span>
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white">
                 Participez activement à la moisson des 100 000 âmes
               </h2>
               <p className="text-slate-300 text-xs sm:text-sm max-w-2xl">
-                Chaque don — qu’il s’agisse d’un don local via MonCash/Natcash ou d’un soutien de la diaspora — permet de financer les bibles, les tournois et l’aide aux personnes vulnérables.
+                Que vous soyez serviteur de Dieu, jeune récitateur ou croyant désireux de vous engager comme membre actif ou bénévole, votre place est parmi nous.
               </p>
             </div>
 

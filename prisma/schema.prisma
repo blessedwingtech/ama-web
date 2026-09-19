@@ -108,18 +108,38 @@ model Report {
   @@map("reports")
 }
 
+model Announcement {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  category    String   @default("COMMUNIQUE") // CONCOURS, COMMUNIQUE, EVENEMENT, SPIRITUEL
+  author      String   @default("Comité Exécutif AMA")
+  summary     String
+  content     String
+  eventDate   String?
+  location    String?
+  isUrgent    Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("announcements")
+}
+
 model SiteStatistic {
   id                          String   @id @default("global-stats")
   visionTarget                Int      @default(100000)
-  currentReachedSouls         Int      @default(12450)
-  confirmedDecisionsForChrist  Int      @default(424)
-  partnerChurches             Int      @default(24)
-  youthAthletesEngaged        Int      @default(1850)
-  biblesDistributed           Int      @default(875)
-  socialAidBeneficiaries      Int      @default(365)
-  activeVolunteers            Int      @default(120)
-  totalMobilizedHtg           Float    @default(1135000)
-  fieldAllocationRate         Float    @default(92.4)
+  currentReachedSouls         Int      @default(2450)
+  confirmedDecisionsForChrist  Int      @default(114)
+  partnerChurches             Int      @default(5)
+  competitionsOrganized       Int      @default(4)
+  laureatesAwarded            Int      @default(14)
+  youthAthletesEngaged        Int      @default(320)
+  biblesDistributed           Int      @default(180)
+  socialAidBeneficiaries      Int      @default(85)
+  activeVolunteers            Int      @default(45)
+  totalMobilizedHtg           Float    @default(435000)
+  fieldAllocationRate         Float    @default(93.5)
   quarterlyData               Json?
   localityData                Json?
   updatedAt                   DateTime @updatedAt
@@ -130,7 +150,7 @@ model SiteStatistic {
 model GalleryPhoto {
   id          String   @id @default(uuid())
   title       String
-  category    String   @default("evangelisation") // evangelisation, sport, jeunesse, social
+  category    String   @default("evangelisation") // evangelisation, theologie, jeunesse, social
   date        String
   location    String
   image       String

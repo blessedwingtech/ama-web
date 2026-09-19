@@ -2,44 +2,83 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Initialisation du Seed Prisma pour AMA...");
+  console.log("🌱 Initialisation du Seed Prisma pour AMA (Données Réelles & Authentiques 2025)...");
 
   const reportsModule = await import("../src/data/reports.js");
+  const announcementsModule = await import("../src/data/announcements.js");
   const mediaModule = await import("../src/data/media.js");
+  const statisticsModule = await import("../src/data/statistics.js");
 
-  // 1. Site Statistics
-  console.log("📊 Synchronisation des statistiques globales...");
+  // 1. Site Statistics Authentiques
+  console.log("📊 Synchronisation des statistiques globales certifiées...");
+  const s = statisticsModule.globalImpactStats;
   await prisma.siteStatistic.upsert({
     where: { id: "global-stats" },
     update: {
-      visionTarget: 100000,
-      currentReachedSouls: 12450,
-      confirmedDecisionsForChrist: 424,
-      partnerChurches: 24,
-      youthAthletesEngaged: 1850,
-      biblesDistributed: 875,
-      socialAidBeneficiaries: 365,
-      activeVolunteers: 120,
-      totalMobilizedHtg: 1135000,
-      fieldAllocationRate: 92.4,
+      visionTarget: s.visionTarget,
+      currentReachedSouls: s.currentReachedSouls,
+      confirmedDecisionsForChrist: s.confirmedDecisionsForChrist,
+      partnerChurches: s.partnerChurches,
+      competitionsOrganized: s.competitionsOrganized || 4,
+      laureatesAwarded: s.laureatesAwarded || 14,
+      youthAthletesEngaged: s.youthAthletesEngaged,
+      biblesDistributed: s.biblesDistributed,
+      socialAidBeneficiaries: s.socialAidBeneficiaries,
+      activeVolunteers: s.activeVolunteers,
+      totalMobilizedHtg: statisticsModule.financialTransparency.totalMobilizedHtg,
+      fieldAllocationRate: statisticsModule.financialTransparency.fieldAllocationRate,
     },
     create: {
       id: "global-stats",
-      visionTarget: 100000,
-      currentReachedSouls: 12450,
-      confirmedDecisionsForChrist: 424,
-      partnerChurches: 24,
-      youthAthletesEngaged: 1850,
-      biblesDistributed: 875,
-      socialAidBeneficiaries: 365,
-      activeVolunteers: 120,
-      totalMobilizedHtg: 1135000,
-      fieldAllocationRate: 92.4,
+      visionTarget: s.visionTarget,
+      currentReachedSouls: s.currentReachedSouls,
+      confirmedDecisionsForChrist: s.confirmedDecisionsForChrist,
+      partnerChurches: s.partnerChurches,
+      competitionsOrganized: s.competitionsOrganized || 4,
+      laureatesAwarded: s.laureatesAwarded || 14,
+      youthAthletesEngaged: s.youthAthletesEngaged,
+      biblesDistributed: s.biblesDistributed,
+      socialAidBeneficiaries: s.socialAidBeneficiaries,
+      activeVolunteers: s.activeVolunteers,
+      totalMobilizedHtg: statisticsModule.financialTransparency.totalMobilizedHtg,
+      fieldAllocationRate: statisticsModule.financialTransparency.fieldAllocationRate,
     },
   });
 
-  // 2. Reports
-  console.log("📑 Synchronisation des rapports...");
+  // 2. Annonces & Publications
+  console.log("📢 Synchronisation des annonces officielles...");
+  for (const ann of announcementsModule.initialAnnouncements) {
+    await prisma.announcement.upsert({
+      where: { slug: ann.slug },
+      update: {
+        title: ann.title,
+        category: ann.category,
+        author: ann.author,
+        summary: ann.summary,
+        content: ann.content,
+        eventDate: ann.eventDate,
+        location: ann.location,
+        isUrgent: ann.isUrgent,
+        isPublished: true,
+      },
+      create: {
+        id: ann.id,
+        title: ann.title,
+        slug: ann.slug,
+        category: ann.category,
+        author: ann.author,
+        summary: ann.summary,
+        content: ann.content,
+        eventDate: ann.eventDate,
+        location: ann.location,
+        isUrgent: ann.isUrgent,
+        isPublished: true,
+      },
+    });
+  }
+
+  // 3. Rapports Périodiques et Concours 2025
+  console.log("📑 Synchronisation des rapports et concours officiels...");
   for (const report of reportsModule.periodicReports) {
     await prisma.report.upsert({
       where: { slug: report.slug },
@@ -76,11 +115,13 @@ async function main() {
     });
   }
 
-  // 3. Photos
-  console.log("📸 Synchronisation des photos...");
-  const photoCount = await prisma.galleryPhoto.count();
-  if (photoCount === 0) {
-    for (const photo of mediaModule.photoGallery) {
+  // 4. Photos de la Galerie
+  console.log("📸 Synchronisation de la galerie photos...");
+  for (const photo of mediaModule.photoGallery) {
+    const existing = await prisma.galleryPhoto.findFirst({
+      where: { title: photo.title },
+    });
+    if (!existing) {
       await prisma.galleryPhoto.create({
         data: {
           title: photo.title,
@@ -95,11 +136,13 @@ async function main() {
     }
   }
 
-  // 4. Audios
-  console.log("🎙️ Synchronisation des audios...");
-  const audioCount = await prisma.audioRecording.count();
-  if (audioCount === 0) {
-    for (const audio of mediaModule.audioRecordings) {
+  // 5. Enregistrements Audio
+  console.log("🎙️ Synchronisation des messages audio...");
+  for (const audio of mediaModule.audioRecordings) {
+    const existing = await prisma.audioRecording.findFirst({
+      where: { title: audio.title },
+    });
+    if (!existing) {
       await prisma.audioRecording.create({
         data: {
           title: audio.title,
@@ -116,7 +159,7 @@ async function main() {
     }
   }
 
-  console.log("✅ Base de données initialisée avec succès !");
+  console.log("✅ Base de données initialisée avec succès avec les données réelles AMA !");
 }
 
 main()

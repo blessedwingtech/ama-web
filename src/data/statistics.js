@@ -1,209 +1,180 @@
 /**
  * Association 100,000 Âmes (AMA) - Données Statistiques et Analytiques d'Impact
- * Trajectoire Vision 2050, séries temporelles trimestrielles, ventilation géographique et financière.
+ * Chiffres réels et certifiés issus des activités et concours officiels de 2025.
  */
 
 export const globalImpactStats = {
   visionTarget: 100000,
-  currentReachedSouls: 12450, // Total person-contacts across crusades, markets, tournaments
-  confirmedDecisionsForChrist: 424, // Total tracked professions of faith
-  partnerChurches: 24, // Active local assemblies
-  youthAthletesEngaged: 1850, // Registered tournament participants
-  biblesDistributed: 875, // Bibles and NT portions
-  socialAidBeneficiaries: 365, // Vulnerable families / elderly helped
-  activeVolunteers: 120, // Field workers, intercessors, referees
-  totalLocalitiesCovered: 7, // Thomonde, Delbourg, Péligre, Feuillet, Sylguerre, Mirebalais, Vieux-Cayes
+  currentReachedSouls: 2450, // Personnes touchées lors des cultes, rassemblements et concours
+  confirmedDecisionsForChrist: 114, // Décisions et engagements spirituels répertoriés
+  partnerChurches: 5, // Églises partenaires ayant concouru et siégeant activement
+  competitionsOrganized: 4, // 4 grands concours officiels en 2025
+  laureatesAwarded: 14, // Nombre de lauréats officiels distingués
+  youthAthletesEngaged: 320, // Jeunes et participants aux activités de formation et jeunesse
+  biblesDistributed: 180, // Bibles et portions scripturaires remises
+  socialAidBeneficiaries: 85, // Familles et aînés assistés dans les communautés
+  activeVolunteers: 45, // Bénévoles, moniteurs, juges et membres de comités
+  totalLocalitiesCovered: 5, // Delbourg, Plaine du Pré, Vieux-Cayes, Feuillet, Sylguerre
   foundingDate: "7 Août 2025",
-  lastUpdated: "Avril 2026",
+  lastUpdated: "Exercice 2025 - 2026",
 };
 
-// Evolution chronologique trimestrielle (Août 2025 -> 2026)
+// Évolution chronologique réelle des activités 2025
 export const quarterlyEvolution = [
   {
     quarter: "T3 2025",
-    label: "3ème Trimestre 2025 (Lancement)",
-    soulsReached: 2800,
-    decisions: 60,
-    churches: 8,
-    youthEngaged: 650,
-    aidFamilies: 45,
-    budgetSpentHtg: 280000,
-  },
-  {
-    quarter: "Été 2025",
-    label: "Saison Estivale (Août 2025)",
-    soulsReached: 5000,
-    decisions: 140,
-    churches: 14,
-    youthEngaged: 850,
-    aidFamilies: 60,
-    budgetSpentHtg: 320000,
+    label: "3ème Trimestre 2025 (Fondation & Lancement)",
+    soulsReached: 850,
+    decisions: 35,
+    churches: 5,
+    youthEngaged: 90,
+    aidFamilies: 25,
+    budgetSpentHtg: 150000,
   },
   {
     quarter: "T4 2025",
-    label: "4ème Trimestre 2025 (Automne)",
-    soulsReached: 4600,
-    decisions: 112,
-    churches: 20,
-    youthEngaged: 350,
-    aidFamilies: 145,
-    budgetSpentHtg: 245000,
-  },
-  {
-    quarter: "T1 2026",
-    label: "1er Trimestre 2026 (Missions Nautiques)",
-    soulsReached: 3850,
-    decisions: 112,
-    churches: 24,
-    youthEngaged: 420,
-    aidFamilies: 115,
-    budgetSpentHtg: 290000,
+    label: "4ème Trimestre 2025 (Les 4 Grands Concours)",
+    soulsReached: 1600,
+    decisions: 79,
+    churches: 5,
+    youthEngaged: 230,
+    aidFamilies: 60,
+    budgetSpentHtg: 285000,
   },
 ];
 
-// Répartition par Localité / Territoire
+// Répartition par Localité / Églises Participantes Réelles
 export const localityImpact = [
   {
-    id: "thomonde-centre",
-    name: "Thomonde Centre & Marché",
-    commune: "Thomonde",
-    soulsReached: 4600,
-    decisions: 165,
-    churches: 7,
-    keyAction: "Croisades de marché & Championnats communaux",
-    percentage: 37,
-  },
-  {
     id: "delbourg",
-    name: "Delbourg (Siège & Église Galilée)",
+    name: "Delbourg (Siège & Église Évangélique Galilée)",
     commune: "Thomonde",
-    soulsReached: 2400,
-    decisions: 82,
-    churches: 4,
-    keyAction: "Formations doctrinales, génie biblique & prière",
-    percentage: 19,
+    soulsReached: 920,
+    decisions: 48,
+    churches: 1,
+    keyAction: "Siège social, Compétition de Versets & Finale des 10 Psaumes",
+    percentage: 38,
   },
   {
-    id: "peligre",
-    name: "Bassin du Lac de Péligre",
-    commune: "Péligre / Centre",
-    soulsReached: 2150,
-    decisions: 74,
-    churches: 4,
-    keyAction: "Évangélisation nautique & aides aux pêcheurs",
-    percentage: 17,
-  },
-  {
-    id: "sylguerre",
-    name: "Sylguerre & Environs",
+    id: "plaine-du-pre",
+    name: "Plaine du Pré (Église de Dieu de la Prophétie)",
     commune: "Plateau Central",
-    soulsReached: 1200,
-    decisions: 41,
-    churches: 3,
-    keyAction: "Programme Lessive & Secours aux anciens",
-    percentage: 10,
-  },
-  {
-    id: "feuillet",
-    name: "Feuillet & Collines",
-    commune: "Thomonde",
-    soulsReached: 950,
-    decisions: 28,
-    churches: 2,
-    keyAction: "Porte-à-porte rural & colportage biblique",
-    percentage: 8,
-  },
-  {
-    id: "mirebalais",
-    name: "Secteur Mirebalais",
-    commune: "Mirebalais",
-    soulsReached: 750,
-    decisions: 22,
-    churches: 3,
-    keyAction: "Ligue de football des jeunes chrétiens (AJPM)",
-    percentage: 6,
+    soulsReached: 510,
+    decisions: 24,
+    churches: 1,
+    keyAction: "1er Prix Concours 18 Nov & 1er Prix Lecture Sans Marmotter",
+    percentage: 21,
   },
   {
     id: "vieux-cayes",
-    name: "Vieux-Cayes",
-    commune: "Péligre / Centre",
-    soulsReached: 400,
-    decisions: 12,
+    name: "Vieux-Cayes (Église Évangélique Chrétienne)",
+    commune: "Plateau Central",
+    soulsReached: 420,
+    decisions: 18,
     churches: 1,
-    keyAction: "Visites pastorales fraternelles",
-    percentage: 3,
+    keyAction: "2ème Prix Concours 18 Nov & 2ème Prix Lecture Sans Marmotter",
+    percentage: 17,
+  },
+  {
+    id: "feuillet",
+    name: "Feuillet (Église Baptiste Messianique)",
+    commune: "Thomonde",
+    soulsReached: 340,
+    decisions: 14,
+    churches: 1,
+    keyAction: "3ème Prix Concours Réflexion Théologique du 18 Nov",
+    percentage: 14,
+  },
+  {
+    id: "sylguerre",
+    name: "Sylguerre (Église de Dieu de la Prophétie)",
+    commune: "Plateau Central",
+    soulsReached: 260,
+    decisions: 10,
+    churches: 1,
+    keyAction: "3ème Prix Lecture Biblique & Solidarité Fraternelle",
+    percentage: 10,
   },
 ];
 
-// Répartition par Pilier d'Intervention
+// Répartition par Piliers d'Intervention Authentiques
 export const pillarsDistribution = [
   {
-    name: "Évangélisation & Croisades",
-    percentage: 42,
-    description: "Proclamation plein air, traversées en pirogues, colportage de traités.",
+    name: "Génie Biblique & Formation Théologique",
+    percentage: 45,
+    description: "Compétitions de versets, concours de réflexion doctrinale et lecture publique.",
     color: "#1e3a8a", // ama-blue-900
   },
   {
-    name: "Sports, Jeunesse & Génie Biblique",
-    percentage: 28,
-    description: "Tournois de football d'été, concours bibliques inter-églises, bourses d'encouragement.",
+    name: "Évangélisation & Rassemblements",
+    percentage: 30,
+    description: "Cultes solennels, veillées, proclamations et visites d'édification.",
     color: "#d97706", // amber-600
   },
   {
-    name: "Diaconat & Secours Social",
-    percentage: 20,
-    description: "Aide aux veuves, personnes âgées, programme de lessive fraternelle et vivres.",
+    name: "Jeunesse & Encadrement Éducatif",
+    percentage: 15,
+    description: "Encadrement des jeunes récitateurs, émulation spirituelle et prix d'excellence.",
     color: "#059669", // emerald-600
   },
   {
-    name: "Formation & Forums Théologiques",
+    name: "Diaconat & Entraide Fraternelle",
     percentage: 10,
-    description: "Colloques pastoraux, modules d'édification des disciples et matériel scripturaire.",
+    description: "Soutien aux nécessiteux, secours et assistance mutuelle inter-églises.",
     color: "#7c3aed", // violet-600
   },
 ];
 
-// Transparence Financière & Allocation des Dépenses (Audit 2025-2026)
+// Transparence Financière & Allocation
 export const financialTransparency = {
-  totalMobilizedHtg: 1135000,
-  fieldAllocationRate: 92.4, // % directly spent on mission
-  adminOverheadRate: 7.6, // % administrative / operational costs
+  totalMobilizedHtg: 435000,
+  fieldAllocationRate: 93.5, // 93.5% directement alloué aux prix, bibles, logistique des concours
+  adminOverheadRate: 6.5,
+  currency: "HTG",
   breakdown: [
-    { label: "Logistique Évangélisation, Sonorisation & Transports", percentage: 44, amountHtg: 499400 },
-    { label: "Équipements Sportifs, Trophées & Bourses Jeunesse", percentage: 26, amountHtg: 295100 },
-    { label: "Aides d'Urgence Diaconales & Kits Alimentaires", percentage: 21, amountHtg: 238350 },
-    { label: "Impression Traités, Bibles & Administration", percentage: 9, amountHtg: 102150 },
+    { category: "Prix, Trophées & Récompenses Bibliques", percentage: 48, amount: 208800 },
+    { category: "Logistique des Concours & Déplacements Jurys", percentage: 28, amount: 121800 },
+    { category: "Aide Sociale & Secours d'Urgence", percentage: 17.5, amount: 76125 },
+    { category: "Frais Administratifs & Enregistrement Légal", percentage: 6.5, amount: 28275 },
   ],
 };
 
-// Jalons Vision 2050 (Feuille de route 25 ans)
+// Jalons Réels & Perspectives Vision 2050
 export const visionMilestones = [
   {
-    year: "2025 - 2027",
-    phase: "Phase 1 : Enracinement & Structuration",
-    target: "10 000 Âmes & 30 Églises",
-    status: "EN COURS (Avancement rapide)",
-    description: "Implantation solide dans les 7 localités pilotes de Thomonde et du Lac de Péligre.",
+    year: "7 Août 2025",
+    title: "Fondation Officielle & Statuts",
+    description: "Assemblée générale constitutive à l'Église Galilée de Delbourg. Adoption unanime des statuts et nomination du comité exécutif.",
+    status: "completed",
   },
   {
-    year: "2028 - 2035",
-    phase: "Phase 2 : Expansion Départementale",
-    target: "35 000 Âmes & 80 Églises",
-    status: "PLANIFIÉ",
-    description: "Extension vers Hinche, Lascahobas, Belladère, Boucan-Carré et tout le Plateau Central.",
+    year: "Octobre 2025",
+    title: "1ère Compétition de Versets",
+    description: "Record historique de 230 versets mémorisés par POLAS Vanessa. 4 lauréats récompensés avec distinctions officielles.",
+    status: "completed",
   },
   {
-    year: "2036 - 2045",
-    phase: "Phase 3 : Rayonnement National & Instituts",
-    target: "70 000 Âmes & 150 Églises",
-    status: "OBJECTIF",
-    description: "Fondation de centres de formation théologique et développement de cliniques mobiles chrétiennes.",
+    year: "Novembre 2025",
+    title: "Concours de Réflexion & de Lecture",
+    description: "Concours sur le thème de l'espérance chrétienne et audition de lecture publique sans marmotter entre 5 assemblées.",
+    status: "completed",
   },
   {
-    year: "2046 - 2050",
-    phase: "Phase 4 : Accomplissement de la Vision",
-    target: "100 000+ Âmes enracinées",
-    status: "VISION SUPRÊME",
-    description: "Un réveil spirituel et social durable ancré dans les Saintes Écritures pour la gloire de Jésus-Christ.",
+    year: "Décembre 2025",
+    title: "Finale des 10 Psaumes (Noël 2025)",
+    description: "Grande finale solennelle de récitation des 10 Psaumes messianiques remportée par LUBIN Katiana (94.5/100).",
+    status: "completed",
+  },
+  {
+    year: "2026 - 2030",
+    title: "Expansion Régionale (Plateau Central)",
+    description: "Intégration de nouvelles églises partenaires, multiplication des concours et des actions d'évangélisation dans tout le Centre.",
+    status: "in_progress",
+  },
+  {
+    year: "Horizon 2050",
+    title: "Accomplissement Vision 100 000 Âmes",
+    description: "100 000 âmes gagnées, formées, enracinées et engagées pour la gloire de Jésus-Christ.",
+    status: "planned",
   },
 ];

@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { periodicReports } from '@/data/reports';
+import { initialAnnouncements } from '@/data/announcements';
 import { photoGallery, audioRecordings } from '@/data/media';
 
 const ADMIN_KEY = process.env.ADMIN_SECRET_KEY || 'AMA2025*Admin';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request) {
   try {
@@ -23,19 +26,21 @@ export async function POST(request) {
     let donations = [];
     let subscribers = [];
     let reports = [];
+    let announcements = [];
     let photos = [];
     let audios = [];
     let siteStats = null;
 
     if (process.env.DATABASE_URL) {
       try {
-        [contacts, prayers, memberships, donations, subscribers, reports, photos, audios, siteStats] = await Promise.all([
+        [contacts, prayers, memberships, donations, subscribers, reports, announcements, photos, audios, siteStats] = await Promise.all([
           prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.prayerRequest.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.membershipApplication.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.donationIntent.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
           prisma.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' }, take: 100 }),
-          prisma.report.findMany({ orderBy: { createdAt: 'desc' } }),
+          prisma.report.findMany({ orderBy: [{ year: 'desc' }, { createdAt: 'desc' }] }),
+          prisma.announcement.findMany({ orderBy: [{ isUrgent: 'desc' }, { createdAt: 'desc' }] }),
           prisma.galleryPhoto.findMany({ orderBy: { createdAt: 'desc' } }),
           prisma.audioRecording.findMany({ orderBy: { createdAt: 'desc' } }),
           prisma.siteStatistic.findUnique({ where: { id: 'global-stats' } }),
@@ -48,6 +53,9 @@ export async function POST(request) {
     // Fallbacks if tables are empty initially
     if (!reports || reports.length === 0) {
       reports = periodicReports;
+    }
+    if (!announcements || announcements.length === 0) {
+      announcements = initialAnnouncements;
     }
     if (!photos || photos.length === 0) {
       photos = photoGallery;
@@ -83,6 +91,9 @@ export async function POST(request) {
         totalDonationsUsd,
         totalSubscribers: subscribers.length,
         totalReports: reports.length,
+        totalAnnouncements: announcements.length,
+        totalPhotos: photos.length,
+        totalAudios: audios.length,
       },
       data: {
         contacts,
@@ -91,6 +102,7 @@ export async function POST(request) {
         donations,
         subscribers,
         reports,
+        announcements,
         photos,
         audios,
         siteStats,
@@ -104,4 +116,3 @@ export async function POST(request) {
     );
   }
 }
-

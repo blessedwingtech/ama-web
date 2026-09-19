@@ -34,11 +34,11 @@ export const siteConfig = {
   goal: "Promouvoir activement le salut en Jésus-Christ, l'édification fraternelle et l'accompagnement social des populations vulnérables dans le Plateau Central haïtien.",
   
   impactStats: [
-    { id: "souls", value: "100 000", label: "Âmes visées d'ici 2050", suffix: "+" },
-    { id: "churches", value: "24", label: "Églises & Assemblées partenaires", suffix: "+" },
-    { id: "tournaments", value: "4", label: "Tournois & Championnats d'été", suffix: "" },
-    { id: "spectators", value: "5 000", label: "Spectateurs & Jeunes mobilisés", suffix: "+" },
-    { id: "localities", value: "7", label: "Localités et zones clés couvertes", suffix: "" },
+    { id: "souls", value: "100 000", label: "Âmes visées d'ici 2050", suffix: "" },
+    { id: "competitions", value: "4", label: "Grands Concours Organisés (2025)", suffix: "" },
+    { id: "laureates", value: "14", label: "Lauréats & Récitateurs Distingués", suffix: "" },
+    { id: "churches", value: "5", label: "Églises Partenaires Fondatrices", suffix: "" },
+    { id: "localities", value: "5", label: "Localités & Secteurs Couverts", suffix: "" },
   ],
 
   paymentMethods: {
