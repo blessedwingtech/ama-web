@@ -476,11 +476,17 @@ export default function MediaPage() {
         </div>
 
         {/* Photos Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPhotos.map((photo) => (
-            <MediaCard key={photo.id} item={photo} onOpen={setSelectedPhoto} />
-          ))}
-        </div>
+        {filteredPhotos.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPhotos.map((photo) => (
+              <MediaCard key={photo.id} item={photo} onOpen={setSelectedPhoto} />
+            ))}
+          </div>
+        ) : (
+          <div className="p-10 text-center bg-slate-50 rounded-3xl border border-slate-200 text-slate-500 text-xs sm:text-sm">
+            Aucun visuel enregistré dans cette section pour le moment.
+          </div>
+        )}
 
         {/* Lightbox Component */}
         <Lightbox
@@ -506,11 +512,23 @@ export default function MediaPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {audiosList.map((audio) => (
-            <AudioPlayer key={audio.id} audio={audio} />
-          ))}
-        </div>
+        {audiosList.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {audiosList.map((audio) => (
+              <AudioPlayer key={audio.id} audio={audio} />
+            ))}
+          </div>
+        ) : (
+          <div className="p-10 text-center bg-slate-50 rounded-3xl border border-slate-200 space-y-2">
+            <Headphones className="w-8 h-8 text-slate-400 mx-auto" />
+            <p className="text-xs sm:text-sm font-semibold text-slate-700">
+              Aucun enregistrement audio n'a été publié pour le moment.
+            </p>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">
+              Les sermons, messages des concours et exhortations théologiques seront diffusés ici dès leur mise en ligne par le secrétariat pastoral.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

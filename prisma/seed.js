@@ -238,84 +238,6 @@ Les assemblées partenaires engagées ont ratifié la déclaration de foi commun
   },
 ];
 
-// 4. GALERIE PHOTOS
-const photoGallery = [
-  {
-    title: "Compétition Régionale de Versets Bibliques",
-    category: "theologie",
-    date: "17 Octobre 2025",
-    location: "Église Évangélique Galilée de Delbourg",
-    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
-    caption: "Mémorisation et proclamation de 230 versets par les lauréats sous la supervision du jury central.",
-  },
-  {
-    title: "Grande Finale de Récitation des 10 Psaumes",
-    category: "jeunesse",
-    date: "24 Décembre 2025",
-    location: "Delbourg, Thomonde",
-    image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
-    caption: "Veillée solennelle de Noël et remise de la Grande Coupe à la lauréate Katiana LUBIN.",
-  },
-  {
-    title: "Délégation de l'Église de Dieu de la Prophétie de Plaine du Pré",
-    category: "theologie",
-    date: "18 Novembre 2025",
-    location: "Plaine du Pré / Delbourg",
-    image: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&q=80",
-    caption: "Félicitations à Jean Rémy GRACIA (1er Prix Réflexion 93/100) et Fedeline SAINSURIN (1ère Lauréate Lecture 88/100).",
-  },
-  {
-    title: "Audition de Lecture de la Bible Sans Marmotter",
-    category: "jeunesse",
-    date: "2 Novembre 2025",
-    location: "Église Évangélique Chrétienne de Vieux-Cayes",
-    image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=800&q=80",
-    caption: "Séance d'audition d'élocution biblique avec les candidats de Vieux-Cayes et de Sylguerre.",
-  },
-  {
-    title: "Assemblée Générale Constitutive",
-    category: "evangelisation",
-    date: "7 Août 2025",
-    location: "Delbourg (#1), Thomonde",
-    image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80",
-    caption: "Signature des statuts et prière de consécration du Comité Exécutif de l'Association 100,000 Âmes.",
-  },
-];
-
-// 5. ENREGISTREMENTS AUDIO
-const audioRecordings = [
-  {
-    title: "L'Exercice des Ministères à la lumière des Écritures",
-    speaker: "Pasteur Yvon BATHOL (Président AMA)",
-    event: "Séminaire Pastoral de Delbourg",
-    duration: "48:15",
-    category: "theologie",
-    date: "Août 2025",
-    audioSrc: "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-    description: "Une exposition doctrinale rigoureuse et sereine sur le service dans l'Église locale et l'autorité des Écritures.",
-  },
-  {
-    title: "La Vision 2050 : 100 000 Âmes Gagnées et Enracinées en Christ",
-    speaker: "Pasteur Yvon BATHOL & Julberson TOUTOUTE",
-    event: "Assemblée Constitutive du 7 Août 2025",
-    duration: "36:10",
-    category: "theologie",
-    date: "7 Août 2025",
-    audioSrc: "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-    description: "Présentation solennelle de la vision, de la confession de foi et des 4 piliers d'intervention dans le Plateau Central.",
-  },
-  {
-    title: "L'Espérance Chrétienne Face à l'Éternité",
-    speaker: "Collège Pastoral AMA",
-    event: "Proclamation des Résultats du Concours 18 Novembre 2025",
-    duration: "42:30",
-    category: "theologie",
-    date: "18 Novembre 2025",
-    audioSrc: "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
-    description: "Méditation sur la fidélité en Christ et la préparation du chrétien à la rencontre de son Seigneur.",
-  },
-];
-
 async function main() {
   console.log("🌱 Initialisation du Seed Prisma pour AMA (Données Réelles & Autonomes 2025)...");
 
@@ -400,51 +322,16 @@ async function main() {
     });
   }
 
-  // 4. Synchronisation Photos
-  console.log("📸 Synchronisation de la galerie photos...");
-  for (const photo of photoGallery) {
-    const existing = await prisma.galleryPhoto.findFirst({
-      where: { title: photo.title },
-    });
-    if (!existing) {
-      await prisma.galleryPhoto.create({
-        data: {
-          title: photo.title,
-          category: photo.category,
-          date: photo.date,
-          location: photo.location,
-          image: photo.image,
-          caption: photo.caption,
-          isPublished: true,
-        },
-      });
-    }
-  }
+  // Nettoyage des enregistrements audio de test/fictifs
+  await prisma.audioRecording.deleteMany({
+    where: {
+      audioSrc: {
+        contains: "codeskulptor-assets",
+      },
+    },
+  });
 
-  // 5. Synchronisation Audios
-  console.log("🎙️ Synchronisation des messages audio...");
-  for (const audio of audioRecordings) {
-    const existing = await prisma.audioRecording.findFirst({
-      where: { title: audio.title },
-    });
-    if (!existing) {
-      await prisma.audioRecording.create({
-        data: {
-          title: audio.title,
-          speaker: audio.speaker,
-          event: audio.event,
-          duration: audio.duration,
-          category: audio.category,
-          date: audio.date,
-          audioSrc: audio.audioSrc,
-          description: audio.description,
-          isPublished: true,
-        },
-      });
-    }
-  }
-
-  console.log("✅ Base de données initialisée avec succès avec les données réelles AMA !");
+  console.log("✅ Base de données initialisée avec succès avec les données 100% réelles AMA !");
 }
 
 main()

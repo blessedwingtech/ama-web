@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import {
   globalImpactStats,
-  quarterlyEvolution,
-  localityImpact,
+  officialCompetitionsList,
+  partnerChurchesStats,
   pillarsDistribution,
-  financialTransparency,
   visionMilestones,
 } from '@/data/statistics';
 
@@ -27,31 +26,18 @@ export async function GET(request) {
 
     const payload = {
       globalStats: siteStats ? {
-        visionTarget: siteStats.visionTarget,
-        currentReachedSouls: siteStats.currentReachedSouls,
-        confirmedDecisionsForChrist: siteStats.confirmedDecisionsForChrist,
-        partnerChurches: siteStats.partnerChurches,
-        youthAthletesEngaged: siteStats.youthAthletesEngaged,
-        biblesDistributed: siteStats.biblesDistributed,
-        socialAidBeneficiaries: siteStats.socialAidBeneficiaries,
-        activeVolunteers: siteStats.activeVolunteers,
-        totalLocalitiesCovered: 7,
+        visionTarget: siteStats.visionTarget || 100000,
+        competitionsOrganized: siteStats.competitionsOrganized || 4,
+        laureatesAwarded: siteStats.laureatesAwarded || 14,
+        partnerChurches: siteStats.partnerChurches || 5,
+        totalVersesRecited: 723,
+        totalLocalitiesCovered: 5,
         foundingDate: "7 Août 2025",
-        lastUpdated: new Date(siteStats.updatedAt).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+        lastUpdated: siteStats.updatedAt ? new Date(siteStats.updatedAt).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) : "Exercice 2025 - 2026",
       } : globalImpactStats,
-      quarterlyEvolution: (siteStats && siteStats.quarterlyData && Array.isArray(siteStats.quarterlyData) && siteStats.quarterlyData.length > 0)
-        ? siteStats.quarterlyData
-        : quarterlyEvolution,
-      localityImpact: (siteStats && siteStats.localityData && Array.isArray(siteStats.localityData) && siteStats.localityData.length > 0)
-        ? siteStats.localityData
-        : localityImpact,
+      officialCompetitions: officialCompetitionsList,
+      partnerChurches: partnerChurchesStats,
       pillarsDistribution,
-      financialTransparency: siteStats ? {
-        totalMobilizedHtg: siteStats.totalMobilizedHtg,
-        fieldAllocationRate: siteStats.fieldAllocationRate,
-        adminOverheadRate: Number((100 - siteStats.fieldAllocationRate).toFixed(1)),
-        breakdown: financialTransparency.breakdown,
-      } : financialTransparency,
       visionMilestones,
     };
 
@@ -65,10 +51,9 @@ export async function GET(request) {
       success: false,
       data: {
         globalStats: globalImpactStats,
-        quarterlyEvolution,
-        localityImpact,
+        officialCompetitions: officialCompetitionsList,
+        partnerChurches: partnerChurchesStats,
         pillarsDistribution,
-        financialTransparency,
         visionMilestones,
       },
       error: error.message,
