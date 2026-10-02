@@ -18,9 +18,9 @@ export default function StickyDonationBar() {
   if (dismissed) return null;
 
   return (
-    <aside hidden aria-label="Bannière de soutien" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-300/60 shadow-2xl px-3 py-2.5 sm:px-6 sm:py-3 transition-transform">
+    <aside aria-label="Bannière de soutien" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-300/60 shadow-2xl px-3 py-2.5 sm:px-6 sm:py-3 transition-transform">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
-        <div hidden className="flex items-center gap-2.5 text-xs sm:text-sm">
+        <div className="flex items-center gap-2.5 text-xs sm:text-sm">
           <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
             <Heart className="w-4 h-4 fill-white" />
           </div>

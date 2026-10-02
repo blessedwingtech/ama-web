@@ -37,7 +37,7 @@ export default function Footer() {
               « Allez, faites de toutes les nations des disciples, les baptisant au nom du Père, du Fils et du Saint-Esprit. » — Matthieu 28:19
             </p>
           </div>
-          <div hidden className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/faire-un-don"
               className="flex items-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 hover:from-ama-gold-700 hover:to-amber-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all"
@@ -124,7 +124,7 @@ export default function Footer() {
                   Statistiques & Vision 2050
                 </Link>
               </li>
-              <li hidden>
+              <li>
                 <Link href="/faire-un-don" className="hover:text-amber-400 transition-colors">
                   Faire un Don (MonCash / Natcash)
                 </Link>
@@ -165,7 +165,7 @@ export default function Footer() {
               </li>
             </ul>
 
-            <div hidden className="pt-2">
+            <div className="pt-2">
               <div className="p-3 rounded-lg bg-slate-800/80 border border-slate-700 text-xs">
                 <p className="font-semibold text-slate-200 mb-1">Dons Mobiles Locaux :</p>
                 <p className="text-amber-400 font-mono">MonCash : 3651-2047</p>
@@ -199,7 +199,8 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              {/* Email caché */}
+              {/* <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
                 <a
                   href={`mailto:${siteConfig.email}`}
@@ -207,43 +208,11 @@ export default function Footer() {
                 >
                   {siteConfig.email}
                 </a>
-              </div>
+              </div> */}
             </div>
 
-            {/* Social icons */}
-            <div className="pt-2 flex items-center gap-3">
-              <a
-                href={siteConfig.socialLinks.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-colors"
-                title="WhatsApp"
-              >
-                <Phone className="w-4 h-4" />
-              </a>
-              <a
-                href={siteConfig.socialLinks.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors"
-                title="Facebook"
-              >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-              </a>
-              <a
-                href={siteConfig.socialLinks.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
-                title="YouTube"
-              >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                </svg>
-              </a>
-            </div>
+            {/* Social icons cachés */}
+            {/* <div className="pt-2 flex items-center gap-3"> ... </div> */}
           </div>
         </div>
 
@@ -261,8 +230,6 @@ export default function Footer() {
               <span>Développé par <strong className="text-amber-400 underline decoration-amber-400/50">BWT</strong> (Blessed Wing Tech)</span>
               <ExternalLink className="w-3 h-3 text-amber-400/80" />
             </a>
-            <span>•</span>
-            <span className="font-mono text-slate-400">{siteConfig.domains.primary}</span>
             <span>•</span>
             <Link href="/admin" className="text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-1">
               <span>🔒 Espace Direction / Admin</span>

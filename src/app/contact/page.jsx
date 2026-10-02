@@ -39,7 +39,7 @@ export default function ContactPage() {
 
       {/* 1. COORDONNÉES OFFICIELLES & CARTE RAPIDE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Box 1: Téléphones */}
           <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
@@ -67,27 +67,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Box 2: Email */}
-          <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-ama-blue-800 border border-blue-200 flex items-center justify-center shrink-0">
-              <Mail className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-serif font-bold text-base text-slate-900">
-                Courrier Électronique
-              </h3>
-              <p className="text-xs text-slate-500 mb-2">Secrétariat & Direction</p>
-              <a
-                href={`mailto:${siteConfig.email}`}
-                className="text-xs sm:text-sm font-bold text-ama-blue-900 hover:underline break-all"
-              >
-                {siteConfig.email}
-              </a>
-              <p className="text-[11px] text-slate-400 mt-1">Réponse sous 24h à 48h</p>
-            </div>
-          </div>
-
-          {/* Box 3: Siège */}
+          {/* Box 2: Siège */}
           <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shrink-0">
               <MapPin className="w-6 h-6" />
