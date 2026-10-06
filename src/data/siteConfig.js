@@ -90,9 +90,9 @@ export const siteConfig = {
   techPartner: {
     name: "Blessed Wing Technology",
     shortName: "BWT",
-    role: "Partenaire Technologique Officiel & Infrastructure Numérique",
+    role: "Partenaire Officiel NTIC & Infrastructure Numérique",
     website: "https://bwt.bittonik.com",
     logo: "/bwt-logo.png",
-    description: "Société d'ingénierie logicielle, d'architecture cloud et d'innovation digitale accompagnant le déploiement technique et la visibilité internationale de l'Association 100,000 Âmes.",
+    description: "Partenaire exclusif en charge de l'ensemble des Nouvelles Technologies de l'Information et de la Communication (NTIC) de l'Association 100,000 Âmes : ingénierie technique, formations numériques, conception, déploiement et gestion complète des infrastructures numériques à tout point.",
   },
 };
