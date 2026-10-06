@@ -60,27 +60,6 @@ export default function HomePage() {
 
   return (
     <div className="space-y-14 sm:space-y-20">
-      {/* 0. URGENT ANNOUNCEMENT TOP BANNER (IF ANY) */}
-      {urgentAnnouncement && (
-        <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white px-4 py-3 shadow-md">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
-            <div className="flex items-center gap-2">
-              <span className="bg-white text-amber-900 font-bold px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider shrink-0">
-                Officiel
-              </span>
-              <span className="font-semibold">{urgentAnnouncement.title}</span>
-            </div>
-            <Link
-              href="/mediatheque"
-              className="inline-flex items-center gap-1 font-bold underline hover:text-amber-200 text-xs shrink-0"
-            >
-              <span>Consulter le communiqué</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      )}
-
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden bg-gradient-to-b from-ama-blue-950 via-ama-blue-900 to-slate-900 text-white py-14 sm:py-20 lg:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-amber-500/15 via-transparent to-transparent pointer-events-none"></div>

@@ -108,9 +108,9 @@ export default function Header() {
           </nav>
 
           {/* Right Action Area */}
-          <div className="flex items-center gap-2 xl:gap-3">
-            {/* Language Switcher */}
-            <div className="relative">
+          <div className="flex items-center gap-2 xl:gap-3 shrink-0">
+            {/* Language Switcher (Masqué pour l'instant) */}
+            {/* <div className="relative">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -144,38 +144,26 @@ export default function Header() {
                   ))}
                 </div>
               )}
-            </div>
+            </div> */}
 
-            {/* Donate CTA (Visible) */}
+            {/* Donate CTA (Strictement sur 1 seule ligne, élégant & compact) */}
             <Link
               href="/faire-un-don"
-              className="flex items-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-md hover:shadow-lg hover:from-ama-gold-700 hover:to-amber-700 active:scale-95 transition-all"
+              className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-ama-gold-600 to-amber-600 text-white px-4 xl:px-5 py-2 xl:py-2.5 rounded-xl font-bold text-xs xl:text-sm shadow-md hover:shadow-lg hover:from-ama-gold-700 hover:to-amber-700 active:scale-95 transition-all whitespace-nowrap shrink-0"
             >
-              <Heart className="w-4 h-4 fill-white" />
-              <span>{t('nav.donate', 'Faire un Don')}</span>
+              <Heart className="w-4 h-4 fill-white shrink-0" />
+              <span className="whitespace-nowrap leading-none">{t('nav.donate', 'Faire un Don')}</span>
             </Link>
           </div>
 
-          {/* Mobile Menu & Language Button */}
+          {/* Mobile Menu & Action Button */}
           <div className="flex items-center gap-2 lg:hidden">
-            {/* Quick Lang toggle for mobile */}
-            <button
-              onClick={() => {
-                const nextLang = language === 'fr' ? 'ht' : language === 'ht' ? 'en' : 'fr';
-                setLanguage(nextLang);
-              }}
-              className="px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 bg-slate-50"
-              title="Changer de langue"
-            >
-              {currentLangObj.flag} {currentLangObj.code.toUpperCase()}
-            </button>
-
             <Link
               href="/faire-un-don"
-              className="flex items-center gap-1 bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs"
+              className="flex items-center gap-1 bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-xs whitespace-nowrap shrink-0"
             >
-              <Heart className="w-3.5 h-3.5 fill-white" />
-              <span>Don</span>
+              <Heart className="w-3.5 h-3.5 fill-white shrink-0" />
+              <span>Faire un Don</span>
             </Link>
 
             <button
@@ -215,35 +203,13 @@ export default function Header() {
           </nav>
 
           <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-3">
-            <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider px-1">
-              Changer de Langue
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {languages.map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => {
-                    setLanguage(l.code);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`py-2 px-3 rounded-lg text-xs font-medium border text-center transition-all ${
-                    language === l.code
-                      ? 'bg-ama-blue-900 text-white border-ama-blue-900 shadow-sm'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  {l.flag} {l.label.split(' ')[0]}
-                </button>
-              ))}
-            </div>
-
-            <div className="pt-2">
+            <div className="pt-1">
               <Link
                 href="/faire-un-don"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-ama-gold-600 to-amber-600 text-white py-3 rounded-xl font-bold text-sm shadow-md"
               >
-                <Heart className="w-4 h-4 fill-white" />
+                <Heart className="w-4 h-4 fill-white shrink-0" />
                 <span>{t('nav.donate', 'Faire un Don (MonCash / Natcash / Diaspora)')}</span>
               </Link>
             </div>
