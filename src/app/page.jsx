@@ -7,6 +7,7 @@ import { siteConfig } from '@/data/siteConfig';
 import { ministries } from '@/data/ministries';
 import { initialAnnouncements } from '@/data/announcements';
 import MinistryCard from '@/components/cards/MinistryCard';
+import PartnersSection from '@/components/common/PartnersSection';
 import {
   Heart,
   ArrowRight,
@@ -408,7 +409,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. BANDEAU DE CONTACT & ENGAGEMENT */}
+      {/* 6. PARTENAIRES & ALLIANCE TECHNOLOGIQUE (BWT) */}
+      <PartnersSection />
+
+      {/* 7. BANDEAU DE CONTACT & ENGAGEMENT */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-ama-blue-900 via-blue-900 to-ama-blue-950 rounded-3xl text-white p-8 sm:p-12 shadow-xl border border-blue-800">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">

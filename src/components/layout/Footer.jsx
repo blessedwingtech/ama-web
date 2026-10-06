@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 import { siteConfig } from '@/data/siteConfig';
 import {
@@ -225,9 +226,18 @@ export default function Footer() {
               href="https://bwt.bittonik.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-1 font-medium"
+              className="text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-2 font-medium"
             >
-              <span>Développé par <strong className="text-amber-400 underline decoration-amber-400/50">BWT</strong> (Blessed Wing Tech)</span>
+              <div className="w-5 h-5 rounded-md bg-white p-0.5 shrink-0 flex items-center justify-center shadow-xs">
+                <Image
+                  src="/bwt-logo.png"
+                  alt="BWT Logo"
+                  width={18}
+                  height={18}
+                  className="object-contain rounded-xs"
+                />
+              </div>
+              <span>Partenaire Technologique : <strong className="text-amber-400 underline decoration-amber-400/50">BWT</strong> (Blessed Wing Technology)</span>
               <ExternalLink className="w-3 h-3 text-amber-400/80" />
             </a>
             <span>•</span>

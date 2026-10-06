@@ -86,4 +86,13 @@ export const siteConfig = {
     whatsapp: "https://wa.me/50932529060",
     instagram: "https://instagram.com/association100000ames",
   },
+
+  techPartner: {
+    name: "Blessed Wing Technology",
+    shortName: "BWT",
+    role: "Partenaire Technologique Officiel & Infrastructure Numérique",
+    website: "https://bwt.bittonik.com",
+    logo: "/bwt-logo.png",
+    description: "Société d'ingénierie logicielle, d'architecture cloud et d'innovation digitale accompagnant le déploiement technique et la visibilité internationale de l'Association 100,000 Âmes.",
+  },
 };

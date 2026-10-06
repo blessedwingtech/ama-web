@@ -1,6 +1,7 @@
 import React from 'react';
 import { siteConfig } from '@/data/siteConfig';
 import PeligreMap from '@/components/common/PeligreMap';
+import PartnersSection from '@/components/common/PartnersSection';
 import {
   Calendar,
   Compass,
@@ -247,6 +248,9 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* 6. PARTENAIRES STRATÉGIQUES & TECHNOLOGIQUES */}
+      <PartnersSection />
     </div>
   );
 }
