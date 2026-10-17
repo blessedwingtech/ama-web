@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { normalizeMediaUrl } from '@/lib/mediaUtils';
 
 const ADMIN_KEY = process.env.ADMIN_SECRET_KEY || 'AMA2025*Admin';
 
@@ -238,18 +239,20 @@ export async function POST(request) {
           data: { isPublished: Boolean(data.isPublished) },
         });
       } else if (action === 'create') {
+        const cleanImage = normalizeMediaUrl(data.image);
         result = await prisma.galleryPhoto.create({
           data: {
             title: data.title,
             category: data.category || 'theologie',
             date: data.date || new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
             location: data.location || 'Delbourg, Thomonde',
-            image: data.image,
+            image: cleanImage,
             caption: data.caption || data.title,
             isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : true,
           },
         });
       } else if (action === 'update') {
+        const cleanImage = data.image ? normalizeMediaUrl(data.image) : undefined;
         result = await prisma.galleryPhoto.update({
           where: { id },
           data: {
@@ -257,7 +260,7 @@ export async function POST(request) {
             category: data.category,
             date: data.date,
             location: data.location,
-            image: data.image,
+            image: cleanImage,
             caption: data.caption,
             isPublished: data.isPublished !== undefined ? Boolean(data.isPublished) : undefined,
           },

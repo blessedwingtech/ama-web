@@ -41,7 +41,20 @@ import {
   Sparkles,
   ChevronRight,
   Flame,
+  Play,
+  Check,
+  Wand2,
 } from 'lucide-react';
+import {
+  isVideoMedia,
+  normalizeMediaUrl,
+  isYouTubeUrl,
+  getYouTubeEmbedUrl,
+  isVimeoUrl,
+  getVimeoEmbedUrl,
+  isDirectVideoUrl,
+  DEFAULT_MEDIA_FALLBACK,
+} from '@/lib/mediaUtils';
 
 export default function AdminDashboardPage() {
   const [authKey, setAuthKey] = useState('');
@@ -114,6 +127,9 @@ export default function AdminDashboardPage() {
     caption: '',
     isPublished: true,
   });
+  const [resolvingMedia, setResolvingMedia] = useState(false);
+  const [resolveMessage, setResolveMessage] = useState('');
+  const [photoPreviewError, setPhotoPreviewError] = useState(false);
 
   // Form states - Audio
   const [audioForm, setAudioForm] = useState({
@@ -412,9 +428,47 @@ export default function AdminDashboardPage() {
     setEditingAnnouncement(null);
   };
 
-  // --- PHOTO HANDLERS ---
+  // --- PHOTO & MEDIA HANDLERS ---
+  const handleResolveMediaUrl = async (customUrl) => {
+    const target = customUrl || photoForm.image;
+    if (!target || !target.trim()) return;
+    setResolvingMedia(true);
+    setResolveMessage('');
+    try {
+      const res = await fetch('/api/media/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: target.trim() }),
+      });
+      const resData = await res.json();
+      if (resData.success && resData.directUrl) {
+        setPhotoForm((prev) => ({ ...prev, image: resData.directUrl }));
+        setPhotoPreviewError(false);
+        if (resData.source === 'memo-share-extracted') {
+          setResolveMessage('✓ Lien MemoTonik converti avec succès en média direct !');
+        } else if (resData.source === 'youtube') {
+          setResolveMessage('✓ Vidéo YouTube détectée et prête à être intégrée !');
+        } else if (resData.source === 'vimeo') {
+          setResolveMessage('✓ Vidéo Vimeo détectée et prête !');
+        } else if (resData.source === 'normalized') {
+          setResolveMessage('✓ Lien converti pour affichage direct direct !');
+        } else {
+          setResolveMessage('✓ Lien vérifié et prêt à l’affichage.');
+        }
+      } else {
+        setResolveMessage('⚠ Impossible d’extraire automatiquement le média. Vérifiez l’adresse.');
+      }
+    } catch (err) {
+      setResolveMessage('⚠ Erreur réseau lors de la vérification du lien.');
+    } finally {
+      setResolvingMedia(false);
+    }
+  };
+
   const openAddPhotoModal = () => {
     setEditingPhoto(null);
+    setPhotoPreviewError(false);
+    setResolveMessage('');
     setPhotoForm({
       title: '',
       category: 'theologie',
@@ -429,6 +483,8 @@ export default function AdminDashboardPage() {
 
   const openEditPhotoModal = (photo) => {
     setEditingPhoto(photo);
+    setPhotoPreviewError(false);
+    setResolveMessage('');
     setPhotoForm({
       title: photo.title || '',
       category: photo.category || 'theologie',
@@ -444,16 +500,18 @@ export default function AdminDashboardPage() {
   const handleSavePhoto = async (e) => {
     e.preventDefault();
     if (!photoForm.title || !photoForm.image) {
-      alert('Veuillez renseigner le Titre et le Lien Image.');
+      alert('Veuillez renseigner le Titre et le Lien du Média.');
       return;
     }
+
+    const cleanImg = normalizeMediaUrl(photoForm.image);
 
     const payload = {
       title: photoForm.title,
       category: photoForm.category,
       date: photoForm.date,
       location: photoForm.location,
-      image: photoForm.image,
+      image: cleanImg,
       caption: photoForm.caption || photoForm.title,
       isPublished: Boolean(photoForm.isPublished),
     };
@@ -1281,21 +1339,33 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {data.photos.map((photo) => (
-              <div
-                key={photo.id}
-                className="rounded-2xl border border-slate-200 overflow-hidden bg-slate-50/50 hover:bg-white transition-all space-y-2 shadow-xs group"
-              >
-                <div className="relative h-44 w-full bg-slate-200 overflow-hidden">
-                  <img
-                    src={photo.image}
-                    alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-900/80 text-white backdrop-blur-xs">
-                    {photo.category}
-                  </span>
-                </div>
+            {data.photos.map((photo) => {
+              const isVid = isVideoMedia(photo.image);
+              const previewSrc = normalizeMediaUrl(photo.image);
+              return (
+                <div
+                  key={photo.id}
+                  className="rounded-2xl border border-slate-200 overflow-hidden bg-slate-50/50 hover:bg-white transition-all space-y-2 shadow-xs group"
+                >
+                  <div className="relative h-44 w-full bg-slate-900 overflow-hidden">
+                    <img
+                      src={previewSrc}
+                      alt={photo.title}
+                      onError={(e) => {
+                        e.currentTarget.src = DEFAULT_MEDIA_FALLBACK;
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-900/80 text-white backdrop-blur-xs">
+                      {photo.category}
+                    </span>
+                    {isVid && (
+                      <span className="absolute top-2 right-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-600/90 text-white flex items-center gap-1 shadow-xs">
+                        <Play className="w-2.5 h-2.5 fill-white" />
+                        <span>Vidéo</span>
+                      </span>
+                    )}
+                  </div>
 
                 <div className="p-4 space-y-2">
                   <h3 className="font-bold text-sm text-slate-900 line-clamp-1">{photo.title}</h3>
@@ -1333,7 +1403,8 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
       )}
@@ -2156,17 +2227,126 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  URL de l'Image (Web / Unsplash / Hébergeur) *
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={photoForm.image}
-                  onChange={(e) => setPhotoForm({ ...photoForm, image: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono text-xs"
-                />
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Lien du Média (Photo ou Vidéo) *
+                  </label>
+                  <span className="text-[11px] text-slate-400">
+                    Image (.png, .jpg), Vidéo (YouTube, MP4, Memo)
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    required
+                    value={photoForm.image}
+                    onChange={(e) => {
+                      setPhotoForm({ ...photoForm, image: e.target.value });
+                      setPhotoPreviewError(false);
+                      setResolveMessage('');
+                    }}
+                    placeholder="https://... (ex: lien direct, MemoTonik share, YouTube)"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono text-xs focus:ring-2 focus:ring-purple-700"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleResolveMediaUrl(photoForm.image)}
+                    disabled={resolvingMedia || !photoForm.image}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 text-xs font-bold transition-all disabled:opacity-50 shrink-0"
+                    title="Vérifier et convertir automatiquement le lien si c'est un lien de partage (ex: MemoTonik)"
+                  >
+                    {resolvingMedia ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Wand2 className="w-3.5 h-3.5 text-purple-600" />
+                    )}
+                    <span>{resolvingMedia ? 'Vérification...' : 'Vérifier & Résoudre'}</span>
+                  </button>
+                </div>
+
+                {resolveMessage && (
+                  <p
+                    className={`mt-1.5 text-xs font-medium p-2 rounded-lg ${
+                      resolveMessage.startsWith('✓')
+                        ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                        : 'text-amber-700 bg-amber-50 border border-amber-200'
+                    }`}
+                  >
+                    {resolveMessage}
+                  </p>
+                )}
+
+                {/* Live Real-time Interactive Preview */}
+                <div className="mt-3 p-3 bg-slate-900 rounded-2xl border border-slate-800 text-white space-y-2">
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-800 pb-2">
+                    <span className="font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5 text-purple-400" />
+                      Aperçu en Direct
+                    </span>
+                    {photoForm.image ? (
+                      isVideoMedia(photoForm.image) ? (
+                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                          <Check className="w-3 h-3" /> Vidéo Prête
+                        </span>
+                      ) : photoPreviewError ? (
+                        <span className="text-amber-400 font-bold flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> Image non affichée
+                        </span>
+                      ) : (
+                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                          <Check className="w-3 h-3" /> Image Opérationnelle
+                        </span>
+                      )
+                    ) : (
+                      <span>Aucun lien saisi</span>
+                    )}
+                  </div>
+
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-black flex items-center justify-center">
+                    {photoForm.image ? (
+                      isYouTubeUrl(photoForm.image) ? (
+                        <iframe
+                          src={getYouTubeEmbedUrl(photoForm.image)}
+                          title="Aperçu YouTube"
+                          className="w-full h-full border-0"
+                          allowFullScreen
+                        />
+                      ) : isVimeoUrl(photoForm.image) ? (
+                        <iframe
+                          src={getVimeoEmbedUrl(photoForm.image)}
+                          title="Aperçu Vimeo"
+                          className="w-full h-full border-0"
+                          allowFullScreen
+                        />
+                      ) : isDirectVideoUrl(photoForm.image) ? (
+                        <video
+                          src={photoForm.image}
+                          controls
+                          className="max-h-full max-w-full"
+                        />
+                      ) : (
+                        <img
+                          src={normalizeMediaUrl(photoForm.image)}
+                          alt="Aperçu"
+                          onLoad={() => setPhotoPreviewError(false)}
+                          onError={() => setPhotoPreviewError(true)}
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      )
+                    ) : (
+                      <div className="text-center p-4 text-slate-500 text-xs">
+                        <ImageIcon className="w-8 h-8 mx-auto mb-1 opacity-40" />
+                        <span>Saisissez un lien ci-dessus pour visualiser le rendu immédiat</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {photoPreviewError && !isVideoMedia(photoForm.image) && (
+                    <div className="text-[11px] text-amber-300 bg-amber-950/50 p-2 rounded-lg border border-amber-800/60 leading-relaxed">
+                      💡 <strong>Astuce :</strong> Si vous utilisez une page de partage (comme MemoTonik), cliquez sur <strong>"Vérifier & Résoudre"</strong> ci-dessus pour extraire automatiquement l’image directe, ou faites un clic droit sur l'image &gt; <em>"Copier l'adresse de l'image"</em>.
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

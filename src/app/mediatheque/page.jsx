@@ -34,11 +34,14 @@ import {
   ExternalLink,
   ShieldCheck,
   Flame,
+  Play,
 } from 'lucide-react';
+import { isVideoMedia } from '@/lib/mediaUtils';
 
 export default function MediaPage() {
   // Gallery states
   const [activePhotoCategory, setActivePhotoCategory] = useState('all');
+  const [mediaTypeFilter, setMediaTypeFilter] = useState('all'); // all, photos, videos
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [photosList, setPhotosList] = useState(photoGallery);
   const [audiosList, setAudiosList] = useState(audioRecordings);
@@ -139,11 +142,19 @@ export default function MediaPage() {
     return list;
   }, [photosList]);
 
-  // Filter photos
-  const filteredPhotos =
-    activePhotoCategory === 'all'
-      ? photosList
-      : photosList.filter((p) => p.category === activePhotoCategory);
+  // Filter photos and videos
+  const filteredPhotos = photosList.filter((p) => {
+    const matchesCategory =
+      activePhotoCategory === 'all' || p.category === activePhotoCategory;
+    const isVid = isVideoMedia(p.image) || Boolean(p.videoUrl);
+    const matchesType =
+      mediaTypeFilter === 'all'
+        ? true
+        : mediaTypeFilter === 'videos'
+        ? isVid
+        : !isVid;
+    return matchesCategory && matchesType;
+  });
 
   // Filter dynamic reports by period & category
   const filteredReports = reportsList.filter((report) => {
@@ -446,32 +457,68 @@ export default function MediaPage() {
 
       {/* 3. GALERIE PHOTOS AVEC SYSTÈME DE FILTRES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-ama-gold-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-              Galerie Visuelle
+              Galerie Visuelle & Vidéos
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 mt-1 flex items-center gap-2">
               <Camera className="w-6 h-6 text-ama-blue-900" />
-              <span>Campagnes & Activités de Terrain</span>
+              <span>Photos, Vidéos & Campagnes de Terrain</span>
             </h2>
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {dynamicPhotoCategories.map((cat) => (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            {/* Media Type Toggle */}
+            <div className="inline-flex items-center p-1 bg-slate-100 rounded-xl">
               <button
-                key={cat.id}
-                onClick={() => setActivePhotoCategory(cat.id)}
-                className={`text-xs px-3.5 py-1.5 rounded-xl font-medium transition-all ${
-                  activePhotoCategory === cat.id
-                    ? 'bg-ama-blue-900 text-white shadow-xs font-bold'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                onClick={() => setMediaTypeFilter('all')}
+                className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-all ${
+                  mediaTypeFilter === 'all'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {cat.label}
+                Tous
               </button>
-            ))}
+              <button
+                onClick={() => setMediaTypeFilter('photos')}
+                className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-all ${
+                  mediaTypeFilter === 'photos'
+                    ? 'bg-white text-purple-700 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Photos
+              </button>
+              <button
+                onClick={() => setMediaTypeFilter('videos')}
+                className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-all ${
+                  mediaTypeFilter === 'videos'
+                    ? 'bg-white text-red-600 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Vidéos
+              </button>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {dynamicPhotoCategories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActivePhotoCategory(cat.id)}
+                  className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all ${
+                    activePhotoCategory === cat.id
+                      ? 'bg-ama-blue-900 text-white shadow-xs font-bold'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
