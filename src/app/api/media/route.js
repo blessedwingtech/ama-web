@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { photoGallery, audioRecordings } from '@/data/media';
+import { normalizeMediaUrl } from '@/lib/mediaUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,9 +35,14 @@ export async function GET(request) {
       audios = audioRecordings;
     }
 
+    const cleanPhotos = photos.map((p) => ({
+      ...p,
+      image: normalizeMediaUrl(p.image),
+    }));
+
     return NextResponse.json({
       success: true,
-      photos,
+      photos: cleanPhotos,
       audios,
     });
   } catch (error) {

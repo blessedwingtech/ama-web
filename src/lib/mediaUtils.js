@@ -50,13 +50,25 @@ export function isVideoMedia(url) {
 
 /**
  * Normalizes URLs for optimal rendering:
+ * - MemoTonik share links -> route through /api/media/proxy
  * - Google Drive share links -> direct stream/download view links
  * - Dropbox dl=0 -> raw=1
  * - YouTube -> high-res thumbnail when used in photo gallery
+ * - Fixes known legacy 404 unsplash photos
  */
 export function normalizeMediaUrl(url) {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
+
+  // Known 404 photo repair (legacy seed)
+  if (trimmed.includes('photo-1508098682722-e99c43a406b2')) {
+    return 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // MemoTonik share links
+  if (trimmed.includes('memo.bittonik.com/share/') || trimmed.includes('/share/photo/')) {
+    return `/api/media/proxy?url=${encodeURIComponent(trimmed)}`;
+  }
 
   // Google Drive
   if (trimmed.includes('drive.google.com')) {
@@ -81,6 +93,70 @@ export function normalizeMediaUrl(url) {
   }
 
   return trimmed;
+}
+
+/**
+ * Server-side helper to fetch and extract direct image/video URL from web pages
+ */
+export async function resolveDirectMediaUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const trimmed = url.trim();
+
+  // Known 404 repair
+  if (trimmed.includes('photo-1508098682722-e99c43a406b2')) {
+    return 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=800&q=80';
+  }
+
+  if (isYouTubeUrl(trimmed) || isVimeoUrl(trimmed) || isDirectVideoUrl(trimmed)) {
+    return trimmed;
+  }
+
+  if (/\.(jpg|jpeg|png|gif|webp|svg|bmp|avif)(\?.*)?$/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  // Try extracting from MemoTonik or HTML page
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(trimmed, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/*,*/*;q=0.8',
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.startsWith('image/')) {
+      return trimmed;
+    }
+
+    if (contentType.includes('text/html')) {
+      const html = await res.text();
+      const memoMatch =
+        html.match(/"url"\s*:\s*"(https?:\\\/\\\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i) ||
+        html.match(/"url"\s*:\s*"(https?:\/\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i);
+
+      if (memoMatch && memoMatch[1]) {
+        return memoMatch[1].replace(/\\\//g, '/');
+      }
+
+      const ogImageMatch = html.match(
+        /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i
+      );
+      if (ogImageMatch && ogImageMatch[1]) {
+        return ogImageMatch[1];
+      }
+    }
+  } catch (e) {
+    // Return normalized fallback
+  }
+
+  return normalizeMediaUrl(trimmed);
 }
 
 /**

@@ -161,6 +161,14 @@ export default function AdminDashboardPage() {
   });
   const [statsSaving, setStatsSaving] = useState(false);
   const [statsMessage, setStatsMessage] = useState('');
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ type, message });
+    setTimeout(() => {
+      setToast((curr) => (curr && curr.message === message ? null : curr));
+    }, 5000);
+  };
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -245,11 +253,35 @@ export default function AdminDashboardPage() {
       if (res.ok && result.success) {
         // Refresh data
         fetchDashboardData(authKey);
+
+        const actionLabels = {
+          create: 'créé(e) avec succès !',
+          update: 'mis(e) à jour avec succès !',
+          delete: 'supprimé(e) avec succès !',
+          togglePublished: 'visibilité mise à jour !',
+          toggleUrgent: 'statut urgent modifié !',
+          togglePrayed: 'statut de prière modifié !',
+          updateStatus: 'statut mis à jour !',
+        };
+        const modelLabels = {
+          photo: 'Photo / Média',
+          report: 'Rapport',
+          announcement: 'Annonce',
+          audio: 'Enregistrement audio',
+          contact: 'Message',
+          prayer: 'Demande de prière',
+          membership: 'Adhésion',
+          donation: 'Intention de don',
+          statistics: 'Statistiques',
+        };
+        const m = modelLabels[model] || 'Élément';
+        const a = actionLabels[action] || 'enregistré(e) !';
+        showToast(`✓ ${m} ${a}`, 'success');
       } else {
-        alert(result.error || 'Erreur lors de l’action');
+        showToast(result.error || 'Erreur lors du traitement', 'error');
       }
     } catch (err) {
-      alert('Erreur réseau');
+      showToast('Erreur réseau. Impossible de contacter le serveur.', 'error');
     }
   };
 
@@ -672,7 +704,33 @@ export default function AdminDashboardPage() {
 
   // 2. AUTHENTICATED ADMIN DASHBOARD
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 relative">
+      {/* Toast Notification Banner */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border text-xs sm:text-sm font-bold transition-all shadow-lg ${
+            toast.type === 'success'
+              ? 'bg-emerald-900 text-white border-emerald-600'
+              : 'bg-red-900 text-white border-red-600'
+          }`}
+        >
+          {toast.type === 'success' ? (
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          ) : (
+            <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+          )}
+          <span>{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            className="ml-2 text-white/70 hover:text-white p-1 rounded-lg"
+            aria-label="Fermer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
       {/* Top Header Card */}
       <div className="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

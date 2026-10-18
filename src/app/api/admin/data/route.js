@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { periodicReports } from '@/data/reports';
 import { initialAnnouncements } from '@/data/announcements';
 import { photoGallery, audioRecordings } from '@/data/media';
+import { normalizeMediaUrl } from '@/lib/mediaUtils';
 
 const ADMIN_KEY = process.env.ADMIN_SECRET_KEY || 'AMA2025*Admin';
 
@@ -103,7 +104,10 @@ export async function POST(request) {
         subscribers,
         reports,
         announcements,
-        photos,
+        photos: photos.map((p) => ({
+          ...p,
+          image: normalizeMediaUrl(p.image),
+        })),
         audios,
         siteStats,
       },

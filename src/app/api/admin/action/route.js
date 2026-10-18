@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { normalizeMediaUrl } from '@/lib/mediaUtils';
+import { normalizeMediaUrl, resolveDirectMediaUrl } from '@/lib/mediaUtils';
 
 const ADMIN_KEY = process.env.ADMIN_SECRET_KEY || 'AMA2025*Admin';
 
@@ -239,7 +239,7 @@ export async function POST(request) {
           data: { isPublished: Boolean(data.isPublished) },
         });
       } else if (action === 'create') {
-        const cleanImage = normalizeMediaUrl(data.image);
+        const cleanImage = await resolveDirectMediaUrl(data.image);
         result = await prisma.galleryPhoto.create({
           data: {
             title: data.title,
@@ -252,7 +252,7 @@ export async function POST(request) {
           },
         });
       } else if (action === 'update') {
-        const cleanImage = data.image ? normalizeMediaUrl(data.image) : undefined;
+        const cleanImage = data.image ? await resolveDirectMediaUrl(data.image) : undefined;
         result = await prisma.galleryPhoto.update({
           where: { id },
           data: {
