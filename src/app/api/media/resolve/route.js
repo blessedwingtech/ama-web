@@ -4,6 +4,7 @@ import {
   isYouTubeUrl,
   isVimeoUrl,
   isDirectVideoUrl,
+  extractMediaFromHtml,
 } from '@/lib/mediaUtils';
 
 export const dynamic = 'force-dynamic';
@@ -109,40 +110,14 @@ export async function POST(request) {
       // If HTML page (like MemoTonik share page)
       if (contentType.includes('text/html')) {
         const html = await res.text();
-
-        // Check for MemoTonik JSON data payload: "url":"https://memotonik.../images/..."
-        const memoMatch = html.match(/"url"\s*:\s*"(https?:\\\/\\\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i) ||
-                          html.match(/"url"\s*:\s*"(https?:\/\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i);
-        if (memoMatch && memoMatch[1]) {
-          const direct = memoMatch[1].replace(/\\\//g, '/');
-          const isVid = /\.(mp4|webm)$/i.test(direct);
+        const extracted = extractMediaFromHtml(html);
+        if (extracted) {
+          const isVid = /\.(mp4|webm|mov|m4v)$/i.test(extracted);
           return NextResponse.json({
             success: true,
-            directUrl: direct,
+            directUrl: extracted,
             type: isVid ? 'video' : 'image',
-            source: 'memo-share-extracted',
-          });
-        }
-
-        // OpenGraph video
-        const ogVideoMatch = html.match(/<meta[^>]*property=["']og:video["'][^>]*content=["']([^"']+)["']/i);
-        if (ogVideoMatch && ogVideoMatch[1]) {
-          return NextResponse.json({
-            success: true,
-            directUrl: ogVideoMatch[1],
-            type: 'video',
-            source: 'og-video',
-          });
-        }
-
-        // OpenGraph image
-        const ogImageMatch = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i);
-        if (ogImageMatch && ogImageMatch[1]) {
-          return NextResponse.json({
-            success: true,
-            directUrl: ogImageMatch[1],
-            type: 'image',
-            source: 'og-image',
+            source: 'page-extracted',
           });
         }
       }

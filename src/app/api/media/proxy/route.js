@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DEFAULT_MEDIA_FALLBACK } from '@/lib/mediaUtils';
+import { extractMediaFromHtml, DEFAULT_MEDIA_FALLBACK } from '@/lib/mediaUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,23 +44,9 @@ export async function GET(request) {
       // If HTML page: extract direct image URL
       if (contentType.includes('text/html')) {
         const html = await res.text();
-
-        // 1. MemoTonik JSON pattern: "url":"https://memotonik.../images/..."
-        const memoMatch =
-          html.match(/"url"\s*:\s*"(https?:\\\/\\\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i) ||
-          html.match(/"url"\s*:\s*"(https?:\/\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i);
-
-        if (memoMatch && memoMatch[1]) {
-          const direct = memoMatch[1].replace(/\\\//g, '/');
+        const direct = extractMediaFromHtml(html);
+        if (direct) {
           return NextResponse.redirect(direct, { status: 307 });
-        }
-
-        // 2. OpenGraph Image
-        const ogImageMatch = html.match(
-          /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i
-        );
-        if (ogImageMatch && ogImageMatch[1]) {
-          return NextResponse.redirect(ogImageMatch[1], { status: 307 });
         }
       }
     } catch (e) {

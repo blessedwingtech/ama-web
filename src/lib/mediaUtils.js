@@ -49,6 +49,51 @@ export function isVideoMedia(url) {
 }
 
 /**
+ * Robust extraction of the actual media file URL from HTML web pages (MemoTonik, RSC payloads, etc.)
+ */
+export function extractMediaFromHtml(content) {
+  if (!content || typeof content !== 'string') return null;
+
+  // 1. Direct storage link (MemoTonik, AWS S3, Cloudflare, etc.)
+  const mStorage = content.match(
+    /https?:\/\/[^"'\s\\]+\/images\/[^"'\s\\]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm|mov)/i
+  );
+  if (mStorage && mStorage[0]) {
+    return mStorage[0].replace(/\\\//g, '/');
+  }
+
+  // 2. Escaped or unescaped \"url\": \"https:...\" (Next.js RSC payload)
+  const mUrl = content.match(
+    /\\?"url\\?"\s*:\s*\\?"(https?:[^"'\\]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm|mov))/i
+  );
+  if (mUrl && mUrl[1]) {
+    return mUrl[1].replace(/\\\//g, '/');
+  }
+
+  // 3. OpenGraph Video
+  const ogVid = content.match(/<meta[^>]*property=["']og:video["'][^>]*content=["']([^"']+)["']/i);
+  if (ogVid && ogVid[1]) {
+    return ogVid[1];
+  }
+
+  // 4. OpenGraph Image (strictly ignore generic site logo/banners like og-image.png)
+  const ogMatch = content.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i);
+  if (ogMatch && ogMatch[1]) {
+    const og = ogMatch[1];
+    if (
+      !og.includes('og-image.png') &&
+      !og.includes('default-og') &&
+      !og.includes('/logo') &&
+      !og.includes('favicon')
+    ) {
+      return og;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Normalizes URLs for optimal rendering:
  * - MemoTonik share links -> route through /api/media/proxy
  * - Google Drive share links -> direct stream/download view links
@@ -115,7 +160,7 @@ export async function resolveDirectMediaUrl(url) {
     return trimmed;
   }
 
-  // Try extracting from MemoTonik or HTML page
+  // Try extracting direct media URL from MemoTonik or HTML page
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -137,19 +182,9 @@ export async function resolveDirectMediaUrl(url) {
 
     if (contentType.includes('text/html')) {
       const html = await res.text();
-      const memoMatch =
-        html.match(/"url"\s*:\s*"(https?:\\\/\\\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i) ||
-        html.match(/"url"\s*:\s*"(https?:\/\/[^"]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm))"/i);
-
-      if (memoMatch && memoMatch[1]) {
-        return memoMatch[1].replace(/\\\//g, '/');
-      }
-
-      const ogImageMatch = html.match(
-        /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i
-      );
-      if (ogImageMatch && ogImageMatch[1]) {
-        return ogImageMatch[1];
+      const extracted = extractMediaFromHtml(html);
+      if (extracted) {
+        return extracted;
       }
     }
   } catch (e) {
