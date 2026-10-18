@@ -109,7 +109,278 @@ export default function DonationForm() {
   };
 
   const handlePrintReceipt = () => {
-    window.print();
+    if (!receiptData) return;
+
+    const printWindow = window.open('', '_blank', 'width=800,height=750');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="fr">
+        <head>
+          <meta charset="utf-8" />
+          <title>Reçu Officiel — ${receiptData.receiptNumber} — Association 100,000 Âmes</title>
+          <style>
+            @page {
+              size: A4 portrait;
+              margin: 15mm;
+            }
+            * {
+              box-sizing: border-box;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              color: #0f172a;
+              background: #ffffff;
+              margin: 0;
+              padding: 24px;
+            }
+            .receipt-card {
+              max-width: 680px;
+              margin: 0 auto;
+              border: 2px solid #0f172a;
+              border-radius: 16px;
+              padding: 32px;
+              background: #ffffff;
+              position: relative;
+            }
+            .header {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              border-bottom: 2px solid #e2e8f0;
+              padding-bottom: 16px;
+              margin-bottom: 20px;
+            }
+            .logo-title h1 {
+              font-family: Georgia, serif;
+              font-size: 22px;
+              color: #0f172a;
+              margin: 0;
+              font-weight: 700;
+            }
+            .logo-title p {
+              font-size: 11px;
+              color: #64748b;
+              margin: 4px 0 0;
+            }
+            .receipt-meta {
+              text-align: right;
+            }
+            .receipt-num {
+              display: inline-block;
+              background: #fef3c7;
+              color: #92400e;
+              border: 1px solid #fde68a;
+              font-family: monospace;
+              font-weight: bold;
+              font-size: 13px;
+              padding: 4px 10px;
+              border-radius: 6px;
+            }
+            .receipt-date {
+              font-size: 11px;
+              color: #64748b;
+              margin-top: 4px;
+            }
+            .banner {
+              text-align: center;
+              background: #f8fafc;
+              border: 1px solid #e2e8f0;
+              padding: 8px 12px;
+              border-radius: 8px;
+              font-weight: 700;
+              font-size: 13px;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              color: #1e293b;
+              margin-bottom: 24px;
+            }
+            .grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 16px;
+              margin-bottom: 20px;
+            }
+            .cell {
+              padding: 10px 14px;
+              background: #f8fafc;
+              border-radius: 8px;
+              border: 1px solid #f1f5f9;
+            }
+            .cell-label {
+              font-size: 10px;
+              text-transform: uppercase;
+              color: #64748b;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+              margin-bottom: 2px;
+            }
+            .cell-value {
+              font-size: 14px;
+              font-weight: 700;
+              color: #0f172a;
+            }
+            .amount-cell {
+              grid-column: span 2;
+              background: #ecfdf5;
+              border: 1px solid #a7f3d0;
+              padding: 14px 18px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              border-radius: 8px;
+            }
+            .amount-val {
+              font-size: 24px;
+              font-weight: 800;
+              color: #047857;
+              font-family: monospace;
+            }
+            .ref-cell {
+              grid-column: span 2;
+              display: flex;
+              justify-content: space-between;
+              font-size: 12px;
+              background: #f1f5f9;
+              padding: 10px 14px;
+              border-radius: 8px;
+            }
+            .verse {
+              text-align: center;
+              font-style: italic;
+              font-size: 11px;
+              color: #475569;
+              margin-top: 24px;
+              padding-top: 14px;
+              border-top: 1px dashed #cbd5e1;
+              line-height: 1.5;
+            }
+            .signatures {
+              display: flex;
+              justify-content: space-between;
+              margin-top: 28px;
+              padding-top: 10px;
+            }
+            .sign-box {
+              width: 220px;
+              text-align: center;
+              font-size: 11px;
+              color: #475569;
+            }
+            .sign-line {
+              border-bottom: 1px solid #94a3b8;
+              margin-bottom: 6px;
+              height: 35px;
+            }
+            .watermark {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              font-size: 40px;
+              font-family: Georgia, serif;
+              font-weight: bold;
+              color: rgba(15, 23, 42, 0.03);
+              pointer-events: none;
+              text-transform: uppercase;
+              white-space: nowrap;
+            }
+            @media print {
+              body { padding: 0; }
+              .receipt-card { border: 1px solid #0f172a; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="receipt-card">
+            <div class="watermark">ASSOCIATION 100,000 ÂMES</div>
+
+            <div class="header">
+              <div class="logo-title">
+                <h1>Association 100,000 Âmes (AMA)</h1>
+                <p>#1, Delbourg, Thomonde (Plateau Central, Haïti)</p>
+                <p>Mission d'Évangélisation, Formation & Secours Fraternel</p>
+              </div>
+              <div class="receipt-meta">
+                <span class="receipt-num">${receiptData.receiptNumber}</span>
+                <div class="receipt-date">Émis le : ${receiptData.date}</div>
+              </div>
+            </div>
+
+            <div class="banner">
+              Reçu Officiel de Déclaration de Don
+            </div>
+
+            <div class="grid">
+              <div class="cell">
+                <div class="cell-label">Donateur / Bienfaiteur</div>
+                <div class="cell-value">${receiptData.donorName}</div>
+              </div>
+
+              <div class="cell">
+                <div class="cell-label">Téléphone / Contact</div>
+                <div class="cell-value">${receiptData.donorPhone || 'Non renseigné'}</div>
+              </div>
+
+              <div class="amount-cell">
+                <div>
+                  <div class="cell-label" style="color: #065f46;">Montant Total Déclaré</div>
+                  <div style="font-size: 11px; color: #047857;">Contribution volontaire pour la Mission</div>
+                </div>
+                <div class="amount-val">${receiptData.amount} ${receiptData.currency}</div>
+              </div>
+
+              <div class="cell">
+                <div class="cell-label">Canal de Transfert</div>
+                <div class="cell-value">${receiptData.channel}</div>
+              </div>
+
+              <div class="cell">
+                <div class="cell-label">Affectation du Don</div>
+                <div class="cell-value">${receiptData.project}</div>
+              </div>
+
+              ${receiptData.referenceCode ? `
+                <div class="ref-cell">
+                  <span style="font-weight: 600; color: #475569;">Code / Réf. Transaction :</span>
+                  <span style="font-family: monospace; font-weight: bold; color: #0f172a;">${receiptData.referenceCode}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="verse">
+              « Que chacun donne comme il l'a résolu en son cœur, sans tristesse ni contrainte ; car Dieu aime celui qui donne avec joie. »<br>
+              <strong>2 Corinthiens 9:7</strong>
+            </div>
+
+            <div class="signatures">
+              <div class="sign-box">
+                <div class="sign-line"></div>
+                <div>Pour le Donateur</div>
+              </div>
+              <div class="sign-box">
+                <div class="sign-line"></div>
+                <div>Trésorerie Générale AMA</div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.focus();
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const generateWhatsAppUrl = () => {

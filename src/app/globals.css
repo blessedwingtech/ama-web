@@ -66,3 +66,20 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
+
+/* Optimisation pour l'impression de documents (Reçus, Bilans) */
+@media print {
+  header,
+  footer,
+  nav,
+  .print-hide,
+  button:not(.print-show) {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
